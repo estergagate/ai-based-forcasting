@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Product | AI-Based Sales Forecasting</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <script src="{{ url_for('theme_script') }}"></script>
+</head>
+
+<body>
+    <main class="sales-edit-page">
+        <a href="{{ url_for('business_products') }}" class="sales-edit-link">
+            Back to Products
+        </a>
+
+        <section class="card sales-edit-card">
+            <h1 class="section-title">Edit Product</h1>
+
+            <p class="sales-description">
+                Update the product name or current selling price.
+                Previously recorded sales amounts will stay the same.
+            </p>
+
+            {% if error %}
+            <p class="business-error" role="alert">{{ error }}</p>
+            {% endif %}
+
+            <form method="post" action="{{ url_for('edit_product', product_id=product['product_id']) }}">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="field">
+                    <label for="product_name">Product Name</label>
+                    <input type="text" id="product_name" name="product_name" value="{{ values['product_name'] }}"
+                        maxlength="100" required>
+                </div>
+
+                <div class="field">
+                    <label for="selling_unit">Selling Unit</label>
+                    <input type="text" id="selling_unit" value="{{ product['selling_unit'] }}" readonly>
+                </div>
+
+                <div class="field">
+                    <label for="selling_price">
+                        Selling Price per Unit (₱)
+                    </label>
+                    <input type="number" id="selling_price" name="selling_price" value="{{ values['selling_price'] }}"
+                        min="0" max="99999999.99" step="0.01" required>
+                </div>
+
+                <div class="business-actions">
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+
+                    <a href="{{ url_for('business_products') }}" class="btn btn-outline">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

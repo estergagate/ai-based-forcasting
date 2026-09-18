@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | AI-Based Sales Forecasting</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <!-- Shared light and dark theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    
+    <script src="{{ url_for('theme_script') }}"></script>
+    </head>
+<body class="admin-login-page signin-page">
+    <main class="admin-login-card">
+
+        <header class="admin-login-header">
+             <img class="signin-circle-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="">
+            <h1 class="signin-brand">
+                <img class="signin-wordmark signin-wordmark-light"
+                    src="{{ url_for('static', filename='images/foodcast-light.png') }}" alt="FoodCast AI">
+            
+                <img class="signin-wordmark signin-wordmark-dark" src="{{ url_for('static', filename='images/foodcast-dark.png') }}"
+                    alt="FoodCast AI">
+            </h1>
+        
+            <p class="signin-system-name">
+                AI-Based Sales Forecasting<br>
+                and Decision Support System
+            </p>
+        
+            <p class="login-description">
+                Welcome back. Sign in to your account.
+            </p>
+        </header>
+
+                {% for message in get_flashed_messages(
+                category_filter=['registration_success']
+                ) %}
+                <p class="account-success" role="status">{{ message }}</p>
+                {% endfor %}
+                
+                <form class="shared-login-form" method="post" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+            {% if error %}
+            <p class="login-error" role="alert">
+                {{ error }}
+            </p>
+            {% endif %}
+        
+            <div class="login-field">
+                <label for="username">Username</label>
+        
+                <input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="username"
+                    required>
+            </div>
+        
+            <div class="login-field">
+                <label for="password">Password</label>
+        
+                <input type="password" id="password" name="password" placeholder="Enter your password"
+                    autocomplete="current-password" required>
+            </div>
+        
+            <button type="submit" class="btn btn-primary btn-block">
+                Sign In
+            </button>
+        </form>
+        
+        <footer class="admin-login-footer">
+            <p>
+                New here?
+                <a href="{{ url_for('register') }}">
+                    Create a business account
+                </a>
+            </p>
+        </footer>
+        </main>
+</body>
+</html>

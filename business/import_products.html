@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Import products | FoodCast AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <script src="{{ url_for('theme_script') }}"></script><script src="{{ url_for('sidebar_script') }}"></script>
+</head><body><div class="shell">
+{% include 'business/sidebar.html' %}
+<div class="main"><header class="topbar"><h1 class="business-page-title">Import products</h1><span>{{ business.business_name }}</span></header>
+<main class="content business-content">
+    <a href="{{ url_for('business_products') }}">← Back to products</a>
+    <p>Upload → Choose columns → Review → Save</p>
+    {% for category, message in get_flashed_messages(with_categories=true) %}<p class="{{ 'business-error' if category == 'product_error' else 'business-success' }}" role="status">{{ message }}</p>{% endfor %}
+    {% if errors %}<div class="business-error" role="alert"><strong>Please check these entries. Nothing has been saved.</strong><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+    {% if not draft %}
+    <section class="card">
+        <h2 class="section-title">Choose your Excel file</h2>
+        <p class="tools-help">Use an .xlsx file with up to 500 products and 50 columns (5 MB maximum). We read the first worksheet. Prices must be in pesos. Extra columns will not be imported.</p>
+        <form method="post" enctype="multipart/form-data" class="tools-stack">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="upload">
+            <label for="file">Excel file</label><input type="file" id="file" name="file" accept=".xlsx" required>
+            <button class="btn btn-primary">Continue</button>
+        </form>
+    </section>
+    {% elif draft.stage == 'map' %}
+    <section class="card">
+        <h2 class="section-title">Which columns should we use?</h2>
+        <p class="tools-help">Worksheet: {{ draft.sheet }}. Column order and names do not matter. Use this preview to choose. No headings? Leave the headings box unticked.</p>
+        <div class="table-scroll"><table class="import-preview"><thead><tr><th>Excel row</th>{% for cell in draft.rows[0] %}<th>Column {{ loop.index }}</th>{% endfor %}</tr></thead>
+        <tbody>{% for row in draft.rows[:20] %}<tr><th>{{ loop.index }}</th>{% for cell in row %}<td>{{ cell.value[:100] }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+        <form method="post" class="tools-stack">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="map">
+            <label for="first_row">Start reading at Excel row</label><input type="number" id="first_row" name="first_row" value="1" min="1" max="20" required>
+            <label class="tools-checkbox"><input type="checkbox" name="has_header" value="yes">This starting row contains headings, not a product</label>
+            {% for field, label in [('name_col', 'Which column has product names?'), ('price_col', 'Which column has prices?'), ('unit_col', 'Which column has units?')] %}
+            <label for="{{ field }}">{{ label }}</label>
+            <select id="{{ field }}" name="{{ field }}" required>
+                {% if field == 'unit_col' %}<option value="-1">My file has no unit column</option>{% else %}<option value="">Choose a column</option>{% endif %}
+                {% for cell in draft.rows[0] %}<option value="{{ loop.index0 }}">Column {{ loop.index }} — {{ cell.value[:40] or '(blank first cell)' }}</option>{% endfor %}
+            </select>
+            {% endfor %}
+            <label for="default_unit">If a unit is missing, use</label>
+            <select id="default_unit" name="default_unit"><option value="">I’ll choose for each product in the next step</option>{% for unit in units %}<option>{{ unit.name }}</option>{% endfor %}</select>
+            <button class="btn btn-primary">Review products</button>
+        </form>
+    </section>
+    {% else %}
+    <section class="card">
+        <div class="tools-heading"><h2 class="section-title">Review your products</h2><button type="button" class="btn btn-outline" data-open-units>Add or remove units</button></div>
+        <p class="tools-help">Fix names, prices, or units below. Untick a row to leave it out. Unknown units must be added or chosen explicitly. Existing products are never overwritten.</p>
+        <p class="tools-help">Adding or deleting units reloads this page. Save your unit list before editing the rows.</p>
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="save">
+            <div class="table-scroll"><table class="import-review"><thead><tr><th>Import?</th><th>Excel row</th><th>Product name</th><th>Price (₱)</th><th>Unit</th></tr></thead><tbody>
+            {% set unit_names = units | map(attribute='name') | list %}
+            {% for row in draft.preview %}{% set i = loop.index0 %}
+            <tr>
+                <td><input type="checkbox" name="include_{{ i }}" value="yes" {% if row.include %}checked{% endif %} aria-label="Import row {{ row.source }}"></td><td>{{ row.source }}</td>
+                <td><input name="name_{{ i }}" value="{{ row.name }}" maxlength="100" aria-label="Product name, row {{ row.source }}"></td>
+                <td><input name="price_{{ i }}" value="{{ row.price }}" maxlength="30" inputmode="decimal" aria-label="Peso price, row {{ row.source }}"></td>
+                <td><select name="unit_{{ i }}" aria-label="Unit, row {{ row.source }}">
+                    {% if row.unit not in unit_names %}<option value="{{ row.unit }}" selected>{{ 'Unknown: ' ~ row.unit if row.unit else 'Choose a unit' }}</option>{% endif %}
+                    {% for unit in units %}<option value="{{ unit.name }}" {% if unit.name == row.unit %}selected{% endif %}>{{ unit.name }}</option>{% endfor %}
+                </select></td>
+            </tr>{% endfor %}</tbody></table></div>
+            <button class="btn btn-primary">Import selected products</button>
+        </form>
+        <form method="post" class="tools-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button name="action" value="back" class="btn btn-outline">Choose columns again</button></form>
+    </section>
+    {% endif %}
+    {% if draft %}<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-outline" name="action" value="cancel">Cancel import</button></form>{% endif %}
+</main></div></div>
+{% include 'business/unit_manager.html' %}
+</body></html>

@@ -1,0 +1,933 @@
+/* =========================================================
+   FOODCAST HOME DASHBOARD
+   ========================================================= */
+
+.home-content {
+    display: grid;
+    gap: 28px;
+
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.home-content>*,
+.home-columns>*,
+.home-summary>* {
+    min-width: 0;
+}
+
+/* Welcome banner */
+.home-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+
+    min-height: 170px;
+    padding: 28px 32px;
+
+    color: #ffffff;
+    background: linear-gradient(120deg,
+            #315c3f,
+            #4f7a4d);
+    border-radius: 16px;
+}
+
+.home-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 13px;
+
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 12px;
+}
+
+.home-hero-meta span {
+    padding: 5px 9px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+}
+
+.home-hero h2 {
+    margin: 0 0 7px;
+    color: #ffffff;
+    font-size: clamp(24px, 2.3vw, 31px);
+}
+
+.home-hero p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+}
+
+.home-hero-side {
+    display: grid;
+    justify-items: end;
+    gap: 16px;
+}
+
+.home-hero-clock {
+    display: grid;
+    justify-items: end;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 13px;
+    text-align: right;
+}
+
+.home-hero-clock time {
+    margin: 2px 0;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.home-hero-clock small {
+    font-size: 11px;
+}
+
+.home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.home-hero-button {
+    padding: 10px 14px;
+
+    color: #315c3f;
+    background: #ffffff;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.home-hero-button-muted {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.home-hero-button:hover {
+    transform: translateY(-1px);
+}
+/* =========================================================
+   SALES SUMMARY
+   ========================================================= */
+
+.home-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+}
+
+.home-summary>.card {
+    box-sizing: border-box;
+    min-height: 142px;
+    padding: 20px 24px;
+}
+
+.home-metric-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.home-metric-heading h3 {
+    margin: 0;
+}
+
+.home-metric-heading span {
+    display: grid;
+    place-items: center;
+
+    width: 31px;
+    height: 31px;
+
+    color: var(--green-dark);
+    background: var(--green-light);
+    border-radius: 8px;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.home-summary h3 {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.home-total {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(28px, 2vw, 34px);
+    font-weight: 700;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.home-summary .home-note {
+    display: block;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.home-summary-note {
+    margin-top: 10px;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.home-content > .card {
+    padding: 26px 28px;
+}
+
+.home-quick-card {
+    padding: 24px 28px;
+}
+
+.home-quick-card .section-title {
+    margin: 0;
+    font-size: 19px;
+}
+
+.home-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 17px;
+}
+
+.home-actions a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    min-height: 60px;
+    padding: 13px 12px;
+
+    color: var(--green-dark);
+    background: var(--green-light);
+    border: 1px solid transparent;
+    border-radius: 11px;
+
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.home-actions a span {
+    flex: 0 0 auto;
+    font-size: 21px;
+    line-height: 1;
+}
+
+.home-actions a:hover {
+    border-color: var(--green);
+}
+
+.home-actions a:focus-visible,
+.home-profile summary:focus-visible,
+.home-section-heading a:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+}
+
+/* =========================================================
+   SALES TREND AND BEST SELLERS
+   ========================================================= */
+
+.home-columns {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+}
+
+.home-columns>.card {
+    padding: 28px 30px;
+}
+
+.home-trend {
+    display: grid;
+    gap: 16px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-trend-label {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+.home-trend-label strong {
+    font-weight: 600;
+}
+
+.home-trend-track {
+    height: 8px;
+    overflow: hidden;
+
+    background: var(--green-light);
+    border-radius: 999px;
+}
+
+.home-trend-bar {
+    width: 0;
+    height: 100%;
+
+    background: var(--green);
+    border-radius: inherit;
+}
+
+.home-products {
+    margin: 16px 0 0;
+    padding-left: 24px;
+}
+
+.home-products li {
+    padding: 14px 0 14px 7px;
+    border-bottom: 1px solid var(--border);
+    overflow-wrap: anywhere;
+}
+
+.home-products li:last-child {
+    border-bottom: 0;
+}
+
+.home-products strong {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.home-product-amount {
+    display: block;
+    margin-top: 5px;
+    color: var(--green-dark);
+}
+
+.home-empty {
+    padding: 25px 0 8px;
+    font-size: 14px;
+}
+
+.home-empty .home-note {
+    margin-top: 8px;
+}
+
+/* =========================================================
+   STOCK ALERT AND STOCK TABLE
+   ========================================================= */
+
+/* Stock alert and table */
+.home-stock-card {
+    overflow: hidden;
+    padding: 0;
+    border-left: 4px solid #dc4b3f;
+}
+
+.home-stock-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-height: 66px;
+    padding: 14px 22px;
+
+    background: rgba(220, 75, 63, 0.10);
+    border-bottom: 1px solid rgba(220, 75, 63, 0.22);
+}
+
+.home-stock-alert-icon {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+
+    width: 29px;
+    height: 29px;
+
+    color: #ef5b4d;
+    background: rgba(220, 75, 63, 0.14);
+    border-radius: 50%;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.home-stock-alert-message {
+    min-width: 0;
+}
+
+.home-stock-alert-message h2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+}
+
+.home-stock-alert-title {
+    color: #ef5b4d;
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.home-stock-alert-count {
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.home-stock-alert-button {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 9px 14px;
+
+    color: #ffffff;
+    background: #dc4b3f;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.home-stock-alert-button:hover {
+    background: #bf3e34;
+}
+
+.home-stock-table {
+    width: calc(100% - 44px);
+    table-layout: fixed;
+    margin: 0 22px 18px;
+}
+
+.home-stock-product-column {
+    width: 22%;
+}
+
+.home-stock-available-column {
+    width: 20%;
+}
+
+.home-stock-step-column {
+    width: 28%;
+}
+
+.home-stock-view-column {
+    width: 30%;
+}
+
+.home-stock-table th {
+    padding-top: 15px;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.home-stock-table th:last-child,
+.home-stock-view-cell {
+    padding-left: 18px;
+    text-align: left;
+}
+
+.home-stock-view-link {
+    display: inline-grid;
+    place-items: center;
+
+    width: 34px;
+    height: 34px;
+
+    color: var(--green-dark);
+    background: var(--green-light);
+    border-radius: 8px;
+
+    text-decoration: none;
+}
+
+.home-stock-view-link:hover {
+    color: var(--card);
+    background: var(--green-dark);
+}
+
+.home-stock-view-link:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+}
+
+.home-stock-view-link svg {
+    width: 18px;
+    height: 18px;
+}
+
+.home-stock-clear {
+    background: rgba(66, 143, 96, 0.12);
+    border-bottom-color: var(--border);
+}
+
+.home-stock-clear .home-stock-alert-icon {
+    color: var(--green-dark);
+    background: var(--card);
+}
+
+.home-stock-clear .home-stock-alert-title {
+    color: var(--green-dark);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.home-stock-clear .home-stock-alert-button {
+    background: var(--green-dark);
+}
+
+@media (max-width: 600px) {
+    .home-stock-alert {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .home-stock-alert-button {
+        width: 100%;
+        margin-left: 41px;
+        text-align: center;
+    }
+
+    .home-stock-table {
+        min-width: 620px;
+    }
+}
+
+
+/* =========================================================
+   PROFILE IN THE HEADER
+   ========================================================= */
+
+.home-profile {
+    position: relative;
+    margin-left: auto;
+}
+
+.home-profile summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 44px;
+    padding: 4px 8px;
+
+    color: var(--ink);
+    border-radius: 10px;
+
+    font-size: 14px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.home-profile summary::-webkit-details-marker {
+    display: none;
+}
+
+.home-profile summary:hover {
+    background: var(--green-light);
+}
+
+.profile-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 200;
+
+    width: min(320px, calc(100vw - 110px));
+    max-height: calc(100dvh - 110px);
+    overflow-y: auto;
+    padding: 20px;
+
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.profile-panel h2 {
+    margin: 0 0 18px;
+    font-size: 17px;
+}
+
+.profile-panel dl {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+}
+
+.profile-panel dt {
+    margin-bottom: 4px;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+.profile-panel dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   SALES FORECAST HERO AND WEATHER
+   ========================================================= */
+
+.forecast-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(390px, 0.7fr);
+        gap: 20px;
+    align-items: center;
+
+    min-height: 0;
+    padding: 18px 28px;
+
+    color: #ffffff;
+    background: linear-gradient(120deg, #315c3f, #4f7a4d);
+    border-radius: 16px;
+}
+
+.forecast-hero-label {
+    margin: 0 0 7px;
+
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.forecast-hero-product {
+    margin: 0 0 18px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.forecast-hero-result {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.forecast-hero-amount {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: clamp(48px, 5vw, 66px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+}
+
+.forecast-hero-unit {
+    margin-bottom: 5px;
+
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.forecast-hero-date {
+    margin: 12px 0 0;
+
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+}
+
+.forecast-hero-unavailable {
+    margin: 0;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.forecast-hero-weather {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+    padding-left: 26px;
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.forecast-weather-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.forecast-weather-heading strong {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 15px;
+}
+
+.forecast-location-button {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+
+    color: #ffffff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.forecast-location-button:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.forecast-location-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.forecast-weather-days {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.forecast-weather-day {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.forecast-weather-day+.forecast-weather-day {
+    padding-left: 14px;
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.forecast-weather-icon {
+    flex: 0 0 auto;
+    font-size: 29px;
+    line-height: 1;
+}
+
+.forecast-weather-day>div {
+    display: grid;
+    min-width: 0;
+}
+
+.forecast-weather-label {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.forecast-temperature {
+    margin: 2px 0;
+    color: #ffffff;
+    font-size: 27px;
+    line-height: 1;
+}
+
+.forecast-weather-day>div>span:not(.forecast-weather-label) {
+    font-size: 13px;
+}
+
+.forecast-weather-day small {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.forecast-weather-advice {
+    margin: 0;
+    padding-left: 12px;
+
+    color: rgba(255, 255, 255, 0.86);
+    border-left: 3px solid #f1bb68;
+
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.forecast-weather-source,
+.forecast-location-success,
+.forecast-location-message,
+.forecast-weather-message {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 9px;
+    line-height: 1.4;
+}
+
+.forecast-location-success {
+    color: #d6f0db;
+    font-weight: 600;
+}
+
+.forecast-weather-message {
+    font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+    .forecast-hero {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .forecast-hero-weather {
+        padding-top: 20px;
+        padding-left: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        border-left: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .forecast-hero {
+        padding: 22px;
+    }
+
+    .forecast-weather-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .forecast-weather-day+.forecast-weather-day {
+        padding-left: 0;
+        border-left: 0;
+    }
+}
+/* =========================================================
+   RESPONSIVE LAYOUT
+   ========================================================= */
+
+@media (max-width: 1200px) {
+    .home-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+
+    .home-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home-weather {
+        grid-template-columns:
+            minmax(180px, 0.8fr) minmax(300px, 1.2fr);
+    }
+
+    .home-weather-advice {
+        grid-column: 1 / -1;
+        padding: 10px 0 0;
+        border-top: 1px solid var(--border);
+        border-left: 0;
+    }
+
+    .home-weather-advice[data-level="high"] {
+        padding-left: 10px;
+        border-left: 3px solid var(--orange);
+    }
+}
+
+@media (max-width: 700px) {
+    .home-content {
+        gap: 20px;
+    }
+
+    .home-hero {
+            align-items: flex-start;
+            flex-direction: column;
+    }
+    
+    .home-hero-side,
+    .home-hero-clock {
+        justify-items: start;
+        text-align: left;
+    }
+    
+    .home-hero-actions {
+        justify-content: flex-start;
+    }
+
+    .home-clock {
+        justify-items: start;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .home-welcome h2 {
+        font-size: 23px;
+    }
+
+    .home-summary {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .home-summary>.card,
+    .home-content>.card,
+    .home-columns>.card {
+        min-height: 0;
+        padding: 22px;
+    }
+
+    .home-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home-weather {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home-weather-days,
+    .home-weather-advice,
+    .home-weather-message {
+        grid-column: 1;
+    }
+
+    .home-weather-day+.home-weather-day {
+        padding-top: 12px;
+        padding-left: 0;
+        border-top: 1px solid var(--border);
+        border-left: 0;
+    }
+
+    .profile-panel {
+        width: min(300px, calc(100vw - 100px));
+    }
+}

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Based Sales Forecasting and Decision Support System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="emoji">🍲</div>
+      <h1>AI-Based Sales Forecasting<br><span class="system-title-secondary">and Decision Support System</span></h1>
+    </div>
+    <p class="login-sub">For Small Food Businesses</p>
+    <form id="login-form">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="e.g. aling.nena">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block login-btn">Log In</button>
+    </form>
+    <div class="demo-note">Frontend demo — no account verification.<br> <button id="demo-login">Continue with sample data</button></div>
+  </div>
+</div>
+
+<!-- ================= APP SCREEN ================= -->
+<div id="app-screen">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><span class="emoji">🍲</span><span>AI-Based Sales Forecasting<br><small>and Decision Support System</small></span></div>
+      <button class="nav-item active" data-page="dashboard"><span class="ic">🏠</span>Dashboard</button>
+      <button class="nav-item" data-page="sales"><span class="ic">💰</span>Sales</button>
+      <button class="nav-item" data-page="forecast"><span class="ic">📈</span>Forecast</button>
+      <button class="nav-item" data-page="recommendations"><span class="ic">💡</span>Recommendations</button>
+      <button class="nav-item" data-page="reports"><span class="ic">📄</span>Reports</button>
+      <button class="nav-item" data-page="settings"><span class="ic">⚙</span>Settings</button>
+      <div class="sidebar-footer">Research Prototype v0.1<br>Not final — for feedback only</div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <h2 id="page-title">Dashboard</h2>
+        <div class="user-chip"><div class="avatar">AN</div> Aling Nena's Carinderia</div>
+      </div>
+
+      <div class="content">
+
+        <!-- ---------- DASHBOARD ---------- -->
+        <div class="page active" id="page-dashboard">
+          <p class="detail-style-1">Good morning! Here's your business overview.</p>
+
+          <div class="grid grid-3 detail-style-2">
+            <div class="card">
+              <div class="stat-label">Today's Sales</div>
+              <div class="stat-value">₱1,850</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">This Week's Sales</div>
+              <div class="stat-value">₱10,800</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">This Month's Sales</div>
+              <div class="stat-value">₱44,200</div>
+            </div>
+          </div>
+
+          <div class="grid grid-2 detail-style-2">
+            <div class="card">
+              <div class="stat-label">Next Week's Expected Sales</div>
+              <div class="stat-value">₱12,500</div>
+              <div class="stat-sub">▲ 15.7% vs. last week</div>
+            </div>
+            <div class="tip-card">
+              <span class="ic">💡</span>
+              <div>
+                <h4>Business Tip</h4>
+                <p>Based on your previous sales, prepare more of your best-selling products for the upcoming period.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card detail-style-2">
+            <div class="section-title">Quick Actions</div>
+            <div class="quick-actions">
+              <button class="qa-btn" data-page="sales"><span class="ic">➕</span>Enter Sales</button>
+              <button class="qa-btn" data-page="sales"><span class="ic">📤</span>Import Sales</button>
+              <button class="qa-btn" data-page="forecast"><span class="ic">📈</span>View Forecast</button>
+              <button class="qa-btn" data-page="reports"><span class="ic">📄</span>View Reports</button>
+            </div>
+          </div>
+
+          <div class="disclaimer">Sample figures shown for demonstration only. This is an early prototype pending review by IT experts and food-business owners.</div>
+        </div>
+
+        <!-- ---------- SALES ---------- -->
+        <div class="page" id="page-sales">
+          <div id="sales-status"></div>
+
+          <div class="card detail-style-2">
+            <div class="section-title">Add Sales Record</div>
+            <div class="form-row">
+              <div class="field">
+                <label for="in-date">Date</label>
+                <input type="date" id="in-date">
+              </div>
+              <div class="field">
+                <label for="in-product">Product</label>
+                <select id="in-product">
+                  <option value="">Select product</option>
+                  <option>Chicken Meal</option>
+                  <option>Pancit</option>
+                  <option>Bread</option>
+                  <option>Rice Meal</option>
+                  <option>Lugaw</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="in-qty">Quantity Sold</label>
+                <input type="number" id="in-qty" min="0" placeholder="0">
+              </div>
+              <div class="field">
+                <label for="in-price">Price (₱)</label>
+                <input type="number" id="in-price" min="0" placeholder="0.00">
+              </div>
+              <button class="btn btn-primary" id="add-record-btn">+ Add Sales Record</button>
+            </div>
+            <button class="btn btn-secondary" id="import-btn">📤 Import Sales File</button>
+          </div>
+
+          <div class="card">
+            <div class="section-title">Sales Records</div>
+            <div class="table-scroll"><table>
+              <thead><tr><th>Date</th><th>Product</th><th>Qty Sold</th><th>Price</th><th>Total Sales</th></tr></thead>
+              <tbody id="sales-table-body"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ---------- PROCESSING ---------- -->
+        <div class="page" id="page-processing">
+          <div class="progress-wrap">
+            <h3>Preparing Your Sales Data</h3>
+            <p class="detail-style-3">Demonstrating the loading screen. No sales analysis is running yet.</p>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+            <div class="progress-pct" id="progress-pct">0%</div>
+          </div>
+        </div>
+
+        <!-- ---------- FORECAST ---------- -->
+        <div class="page" id="page-forecast">
+          <div class="card detail-style-2">
+            <div class="section-title">Sales Forecast</div>
+            <p class="detail-style-4">Based on your previous sales records, the system estimates your future sales.</p>
+            <div class="period-toggle">
+              <button class="period-btn active" data-period="7">Next 7 Days</button>
+              <button class="period-btn" data-period="30">Next 30 Days</button>
+            </div>
+            <div class="chart-wrap">
+              <svg id="forecast-chart" viewBox="0 0 600 220" width="100%" height="220"></svg>
+              <div class="legend">
+                <span><i class="dot detail-style-5"></i>Previous Sales</span>
+                <span><i class="dot detail-style-6"></i>Forecasted Sales</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card detail-style-2">
+            <div class="section-title">Forecasting Model Preview</div>
+            <p class="detail-style-7">This section previews where forecasting model information will appear. No model is trained or evaluated in this frontend demo.</p>
+            <button class="link-btn detail-style-8" id="toggle-model-details">View Model Details</button>
+            <div class="model-details" id="model-details">
+              The chart uses sample numbers. Model training and actual predictions will be implemented when we connect the backend.
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="generate-forecast-btn">Generate Forecast</button>
+        </div>
+
+        <!-- ---------- FORECAST RESULTS ---------- -->
+        <div class="page" id="page-results">
+          <div class="grid grid-3 detail-style-2">
+            <div class="card">
+              <div class="stat-label">Expected Sales</div>
+              <div class="stat-value" id="res-expected">₱12,500</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Forecast Period</div>
+              <div class="stat-value detail-style-9" id="res-period">Sep 1 – 7, 2026</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Expected Demand</div>
+              <div><span class="badge badge-high">High</span></div>
+            </div>
+          </div>
+
+          <div class="card detail-style-2">
+            <div class="section-title">What the Forecast Means</div>
+            <p class="detail-style-10">Sales are expected to increase compared with your previous period.</p>
+            <div class="comparison">
+              <div class="c-item">
+                <div class="c-label">Previous Sales</div>
+                <div class="c-value">₱10,800</div>
+              </div>
+              <div class="c-item">
+                <div class="c-label">Forecasted Sales</div>
+                <div class="c-value">₱12,500</div>
+              </div>
+              <div class="c-item">
+                <div class="c-label">Expected Change</div>
+                <div class="c-value change-up">+15.7%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card detail-style-2">
+            <div class="section-title">Expected Demand by Product</div>
+            <div class="table-scroll"><table>
+              <thead><tr><th>Product</th><th>Expected Demand</th></tr></thead>
+              <tbody>
+                <tr><td>Chicken Meal</td><td><span class="badge badge-high">High</span></td></tr>
+                <tr><td>Bread</td><td><span class="badge badge-mod">Moderate</span></td></tr>
+                <tr><td>Pancit</td><td><span class="badge badge-low">Low</span></td></tr>
+              </tbody>
+            </table></div>
+          </div>
+          <p class="detail-style-11">Example values shown for demonstration only — not actual research findings.</p>
+          <button class="btn btn-primary detail-style-12" data-page="recommendations">View Recommendations</button>
+        </div>
+
+        <!-- ---------- RECOMMENDATIONS ---------- -->
+        <div class="page" id="page-recommendations">
+          <div class="section-title">Business Recommendations</div>
+          <div class="rec-grid">
+            <div class="rec-card">
+              <span class="ic">📦</span>
+              <h4>Inventory</h4>
+              <p>Consider preparing more ingredients for products with higher expected demand.</p>
+            </div>
+            <div class="rec-card">
+              <span class="ic">🍽</span>
+              <h4>Products</h4>
+              <p>Consider preparing more of the products expected to sell well.</p>
+            </div>
+            <div class="rec-card">
+              <span class="ic">📈</span>
+              <h4>Sales</h4>
+              <p>Sales are expected to increase during the forecast period.</p>
+            </div>
+            <div class="rec-card">
+              <span class="ic">✅</span>
+              <h4>Preparation</h4>
+              <p>Review your available inventory before the forecast period begins.</p>
+            </div>
+          </div>
+          <div class="disclaimer">These are prototype examples only. Recommendations have not yet been validated by food-business owners and will be refined based on research findings.</div>
+        </div>
+
+        <!-- ---------- REPORTS ---------- -->
+        <div class="page" id="page-reports">
+          <div class="card">
+            <div class="section-title">Reports</div>
+            <div class="report-row">
+              <div class="rtitle">📄 Sales Report</div>
+              <div class="report-actions">
+                <button class="btn btn-outline" data-report="Sales Report" data-action="view">View</button>
+                <button class="btn btn-outline" data-action="print">Print</button>
+                <button class="btn btn-outline" data-report="Sales Report" data-action="export">Export</button>
+              </div>
+            </div>
+            <div class="report-row">
+              <div class="rtitle">📈 Sales Forecast Report</div>
+              <div class="report-actions">
+                <button class="btn btn-outline" data-report="Sales Forecast Report" data-action="view">View</button>
+                <button class="btn btn-outline" data-action="print">Print</button>
+                <button class="btn btn-outline" data-report="Sales Forecast Report" data-action="export">Export</button>
+              </div>
+            </div>
+            <div class="report-row">
+              <div class="rtitle">🍽 Product Sales Report</div>
+              <div class="report-actions">
+                <button class="btn btn-outline" data-report="Product Sales Report" data-action="view">View</button>
+                <button class="btn btn-outline" data-action="print">Print</button>
+                <button class="btn btn-outline" data-report="Product Sales Report" data-action="export">Export</button>
+              </div>
+            </div>
+            <div class="report-row">
+              <div class="rtitle">💡 Recommendations Report</div>
+              <div class="report-actions">
+                <button class="btn btn-outline" data-report="Recommendations Report" data-action="view">View</button>
+                <button class="btn btn-outline" data-action="print">Print</button>
+                <button class="btn btn-outline" data-report="Recommendations Report" data-action="export">Export</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- SETTINGS ---------- -->
+        <div class="page" id="page-settings">
+          <div class="card settings-form">
+            <div class="section-title">Business Settings</div>
+            <div class="field">
+              <label>Business Name</label>
+              <input type="text" value="Aling Nena's Carinderia">
+            </div>
+            <div class="field">
+              <label>Business Type</label>
+              <input type="text" value="Carinderia">
+            </div>
+            <button class="btn btn-outline detail-style-13" id="logout-btn">Log Out</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

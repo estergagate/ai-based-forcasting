@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Business Tips | FoodCast AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='tips.css') }}">
+
+    <script src="{{ url_for('theme_script') }}"></script>
+    <script src="{{ url_for('sidebar_script') }}"></script>
+</head>
+
+<body class="tips-page">
+    <div class="shell">
+        {% include "business/sidebar.html" %}
+
+        <div class="main">
+            {% include "business/header.html" %}
+
+            <main class="content tips-content">
+                <header class="tips-introduction">
+                    <div>
+                        <h2>Helpful tips for your business</h2>
+
+                        <p>
+                            These tips are based on the sales and stock
+                            information saved in your account.
+                        </p>
+                    </div>
+
+                    <p class="tips-period">
+                        {{ recent_start.strftime("%b %d") }}
+                        –
+                        {{ today.strftime("%b %d, %Y") }}
+                    </p>
+                </header>
+
+                <section class="tips-list" aria-label="Business suggestions">
+                    {% for tip in tips %}
+                    <article class="tip-card tip-{{ tip['level'] }}">
+                        <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" aria-hidden="true">
+                            {% if tip["icon"] == "products" %}
+                            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+                            <path d="M4 7l8 4 8-4M12 11v10"></path>
+                        
+                            {% elif tip["icon"] == "sales" %}
+                            <path d="M4 19V5M4 19h16"></path>
+                            <path d="M7 15l4-4 3 2 5-7"></path>
+                        
+                            {% elif tip["icon"] == "records" %}
+                            <path d="M5 4h14v17H5V4z"></path>
+                            <path d="M8 2v4M16 2v4M5 9h14"></path>
+                            <path d="M9 15l2 2 4-5"></path>
+                        
+                            {% elif tip["icon"] == "stock" %}
+                            <path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"></path>
+                            <path d="M3 7l9 4 9-4M12 11v10"></path>
+                        
+                            {% elif tip["icon"] == "best-seller" %}
+                            <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2-4.5-4.4 6.2-.9L12 3z"></path>
+                        
+                            {% elif tip["icon"] == "waste" %}
+                            <path d="M4 7h16M9 7V4h6v3"></path>
+                            <path d="M7 7l1 14h8l1-14M10 11v6M14 11v6"></path>
+                        
+                            {% else %}
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 11v5M12 8h.01"></path>
+                            {% endif %}
+                        </svg>
+
+                        <div class="tip-content">
+                            <h3>{{ tip["title"] }}</h3>
+
+                            <p>{{ tip["message"] }}</p>
+
+                        </div>
+                    </article>
+                    {% endfor %}
+                </section>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

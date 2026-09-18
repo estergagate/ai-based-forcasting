@@ -1,0 +1,18 @@
+{
+  "dataset": "Public external dairy data — Product 1",
+  "product": "dairy_product_1",
+  "target": "daily_unit_sales",
+  "forecast_date": "2023-01-01",
+  "predicted_quantity": 824.8045874819619,
+  "unit": "units",
+  "history_end": "2022-12-31",
+  "training_rows": 1061,
+  "model": "Random Forest",
+  "settings": {
+    "depth": 12,
+    "leaf_size": 3
+  },
+  "generated_at": "2026-09-15T14:14:32.338715+00:00",
+  "actual_quantity": null,
+  "note": "External dataset demonstration. No actual value is available for this forecast date. This is not a local business forecast."
+}

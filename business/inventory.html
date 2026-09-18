@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory | Sales Forecasting System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <script src="{{ url_for('theme_script') }}"></script>
+
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <script src="{{ url_for('sidebar_script') }}"></script>
+        <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='dashboard.css') }}"
+    >
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='stock.css') }}"
+    >
+</head>
+
+<body>
+    <div class="shell">
+        {% include "business/sidebar.html" %}
+
+        <div class="main">
+{% include "business/header.html" %}
+            <main class="content business-content">
+
+                <section class="products-hero stock-hero">
+                    <div>
+                        <p class="products-hero-label">Stock management</p>
+                        <h2>Keep track of your stock</h2>
+                        <p>Save stock updates so you can easily see what is available and what needs attention.</p>
+                    </div>
+                
+                    <div class="products-hero-actions">
+                        <a href="#update-stock-title" class="products-hero-button products-hero-button-muted">
+                            Update stock
+                        </a>
+                
+                        <a href="{{ url_for('business_tips') }}" class="products-hero-button">
+                            View business tips →
+                        </a>
+                    </div>
+                </section>
+
+                {% if products %}
+                <section class="card stock-entry-card">
+                    <h2 id="update-stock-title" class="section-title">Update stock</h2>
+
+                    <p class="stock-help">
+                        Add stock when products arrive or are prepared.
+                        Remove stock when products are sold, spoiled, or counted incorrectly.
+                    </p>
+
+                    {% if error %}
+                    <p class="business-error" role="alert">
+                        {{ error }}
+                    </p>
+                    {% endif %}
+
+                     <form 
+                        method="post" 
+                        action="{{ url_for('business_inventory') }}" 
+                        class="entry-form entry-form-inventory"
+                    >
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="field">
+                            <label for="product_id">Product</label>
+
+                            <select id="product_id" name="product_id" required>
+                                <option value="">Select a product</option>
+
+                                {% for product in products %}
+                                <option value="{{ product['product_id'] }}" {% if
+                                    values['product_id']==product['product_id']|string %} selected {% endif %}>
+                                    {{ product["product_name"] }}
+                                    ({{ product["selling_unit"] }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="movement_type">What happened?</label>
+
+                            <select id="movement_type" name="movement_type" required>
+                                <option value="">Select a movement</option>
+
+                                {% for movement_type in movement_types %}
+                                <option value="{{ movement_type }}" {% if values['movement_type']==movement_type %}selected{% endif %}>
+                                    {% if movement_type == "Stock In" %}
+                                    Add stock
+                                    {% elif movement_type == "Sold" %}
+                                    Sold to customers
+                                    {% elif movement_type == "Waste" %}
+                                    Spoiled or thrown away
+                                    {% elif movement_type == "Adjustment In" %}
+                                    Correct stock: add
+                                    {% elif movement_type == "Adjustment Out" %}
+                                    Correct stock: remove
+                                    {% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="quantity">How many?</label>
+
+                            <input type="number" id="quantity" name="quantity" value="{{ values['quantity'] }}" min="1"
+                                max="2147483647" step="1" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="notes">
+                                Notes (optional, max 255 characters)
+                            </label>
+
+                            <input type="text" id="notes" name="notes" value="{{ values['notes'] }}" maxlength="255">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Save update
+                        </button>
+                    </form>
+                </section>
+                {% endif %}
+
+                <section class="card stock-results-card">
+                    <h2 class="section-title">Current stock</h2>
+                    
+                    <p class="stock-help">
+                        This shows what the system has recorded.
+                        Count your actual stock before making corrections.
+                    </p>
+                    
+                
+                    {% if products %}
+                    <div class="table-scroll">
+                        <table id="stock-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">PRODUCT</th>
+                                    <th scope="col">CURRENT STOCK</th>
+                                    <th scope="col">UNIT</th>
+                                    <th scope="col">STATUS</th>
+                                </tr>
+                            </thead>
+                
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                    <td>{{ product["product_name"] }}</td>
+                                    <td>{{ product["available"] }}</td>
+                                    <td>{{ product["selling_unit"] }}</td>
+                                    
+                                    <td>
+                                        {% if product["available"] > 0 %}
+                                        <span class="stock-status stock-status-available">
+                                            Available
+                                        </span>
+                                        
+                                        {% elif product["available"] == 0 %}
+                                        <span class="stock-status stock-status-empty">
+                                            Out of stock
+                                        </span>
+                                        
+                                        {% else %}
+                                        <span class="stock-status stock-status-error">
+                                            Check your entries
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p>Add products before recording inventory.</p>
+                    <a href="{{ url_for('business_products') }}">
+                        Go to Products
+                    </a>
+                    {% endif %}
+                </section>
+
+                <section class="card stock-results-card">
+                    <h2 class="section-title">Recent stock updates</h2>
+
+                    <p class="stock-help">
+                        Your latest 50 updates are shown here.
+                    </p>
+
+                    {% if movements %}
+                    <div class="table-scroll">
+                        <table id="stock-updates-table">
+                            <colgroup>
+                                <col class="stock-date-column">
+                                <col class="stock-product-column">
+                                <col class="stock-update-column">
+                                <col class="stock-amount-column">
+                                <col class="stock-unit-column">
+                                <col class="stock-notes-column">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">DATE</th>
+                                    <th scope="col">PRODUCT</th>
+                                    <th scope="col">UPDATE</th>
+                                    <th scope="col">AMOUNT</th>
+                                    <th scope="col">UNIT</th>
+                                    <th scope="col">NOTES</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for movement in movements %}
+                                <tr>
+                                    <td>
+                                        {{ movement["created_at"].strftime("%b %d, %Y") }}
+                                    </td>
+                                    <td>{{ movement["product_name"] }}</td>
+                                    <td>
+                                        {% if movement["movement_type"] == "Stock In" %}
+                                        Added stock
+                                        {% elif movement["movement_type"] == "Sold" %}
+                                        Sold to customers
+                                        {% elif movement["movement_type"] == "Waste" %}
+                                        Spoiled or thrown away
+                                        {% elif movement["movement_type"] == "Adjustment In" %}
+                                        Corrected: added stock
+                                        {% elif movement["movement_type"] == "Adjustment Out" %}
+                                        Corrected: removed stock
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ movement["quantity"] }}</td>
+                                    <td>{{ movement["selling_unit"] }}</td>
+                                    <td class="stock-note-cell">
+                                        {% if movement["notes"] %}
+                                        <span class="stock-note-preview">
+                                            {{ movement["notes"].split()[:4] | join(" ") }}{% if movement["notes"].split()|length > 4 %}...{% endif %}
+                                        </span>
+                                    
+                                        {% if movement["notes"].split()|length > 4 %}
+                                        <button type="button" class="stock-note-button" data-stock-note="{{ movement['notes'] }}">
+                                            See note
+                                        </button>
+                                        {% endif %}
+                                        {% else %}
+                                        —
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p>No stock movements recorded yet.</p>
+                    {% endif %}
+                </section>
+
+                <p id="stock-search-empty" hidden>No stock records match your search.</p>
+            </main>
+        </div>
+    </div>
+
+<dialog id="stock-note-dialog" class="stock-note-dialog">
+    <div class="stock-note-dialog-heading">
+        <h2>Note</h2>
+
+        <button type="button" id="close-stock-note" class="stock-note-close" aria-label="Close note">
+            ×
+        </button>
+    </div>
+
+    <p id="stock-note-full-text"></p>
+
+    <button type="button" id="stock-note-done" class="btn btn-primary">
+        Done
+    </button>
+</dialog>
+
+<script>
+    (function () {
+        const input = document.getElementById("stock_live_search");
+        const clearButton = document.getElementById("clear-stock-live-search");
+        const tables = [
+            document.getElementById("stock-table"),
+            document.getElementById("stock-updates-table")
+        ].filter(Boolean);
+
+        if (!input || !clearButton || !tables.length) return;
+
+        function filterStock() {
+            const text = input.value.trim().toLowerCase();
+            let matches = 0;
+
+            tables.forEach(function (table) {
+                table.querySelectorAll("tbody tr").forEach(function (row) {
+                    const matchesSearch = row.textContent.toLowerCase().includes(text);
+                    row.hidden = !matchesSearch;
+
+                    if (matchesSearch) matches += 1;
+                });
+            });
+
+            clearButton.hidden = text.length === 0;
+            document.body.classList.toggle("stock-search-active", text.length > 0);
+
+            const emptyMessage = document.getElementById("stock-search-empty");
+            if (emptyMessage) {
+                emptyMessage.hidden = text.length === 0 || matches > 0;
+            }
+        }
+
+        input.addEventListener("input", filterStock);
+
+        clearButton.addEventListener("click", function () {
+            input.value = "";
+            input.focus();
+            filterStock();
+        });
+    })();
+
+    const noteDialog = document.getElementById("stock-note-dialog");
+    const noteText = document.getElementById("stock-note-full-text");
+    const closeNoteButton = document.getElementById("close-stock-note");
+    const doneNoteButton = document.getElementById("stock-note-done");
+
+    document.querySelectorAll("[data-stock-note]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            noteText.textContent = button.dataset.stockNote;
+            noteDialog.showModal();
+            closeNoteButton.focus();
+        });
+    });
+
+    closeNoteButton.addEventListener("click", function () {
+        noteDialog.close();
+    });
+
+    doneNoteButton.addEventListener("click", function () {
+        noteDialog.close();
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+{
+  "dataset": "Public external dairy data \u2014 Product 1",
+  "target": "daily_unit_sales",
+  "evaluation": "Rolling one-day-ahead; actual prior days available",
+  "training_end": "2021-12-31",
+  "test_period": "2022-01-01 to 2022-12-31",
+  "evaluated_days": 362,
+  "skipped_days": 3,
+  "validation_results": [
+    {
+      "depth": 6,
+      "leaf_size": 5,
+      "mae": 644.1686439933624,
+      "rmse": 878.0383443754669
+    },
+    {
+      "depth": 12,
+      "leaf_size": 3,
+      "mae": 642.9246720142368,
+      "rmse": 881.1766822069352
+    }
+  ],
+  "chosen_settings": {
+    "depth": 12,
+    "leaf_size": 3
+  },
+  "baseline": {
+    "mae": 790.3397790055252,
+    "rmse": 1076.2691788320747
+  },
+  "random_forest": {
+    "mae": 638.9361791791825,
+    "rmse": 867.8619348087706
+  },
+  "sklearn_version": "1.9.1",
+  "pandas_version": "3.0.5"
+}

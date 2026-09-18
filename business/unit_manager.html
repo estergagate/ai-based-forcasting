@@ -1,0 +1,26 @@
+<dialog id="unit-manager" class="tools-dialog" aria-labelledby="unit-manager-title">
+    <div class="tools-heading">
+        <h2 id="unit-manager-title">Your selling units</h2>
+        <button type="button" class="unit-x" data-close-units aria-label="Close unit settings">×</button>
+    </div>
+    <p class="tools-help">Examples: Piece, Tray, Box. Units used by products cannot be deleted. Sales and stock currently accept whole-number quantities only.</p>
+    <ul class="unit-list">
+        {% for unit in units %}
+        <li><span>{{ unit.name }}</span><button type="button" class="unit-x" data-delete-unit="{{ unit.unit_id }}" data-unit-name="{{ unit.name }}" aria-label="Delete {{ unit.name }}">×</button></li>
+        {% endfor %}
+    </ul>
+    <form method="post" action="{{ url_for('manage_product_units') }}" class="tools-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="return_to" value="{{ 'import' if draft is defined else 'products' }}">
+        <label for="new-unit">New unit name</label>
+        <input id="new-unit" name="name" maxlength="40" placeholder="Example: Tray" required>
+        <button class="btn btn-primary">Add unit</button>
+    </form>
+</dialog>
+<form id="delete-unit-form" method="post" action="{{ url_for('manage_product_units') }}" hidden>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="unit_id" value="">
+    <input type="hidden" name="return_to" value="{{ 'import' if draft is defined else 'products' }}">
+</form>

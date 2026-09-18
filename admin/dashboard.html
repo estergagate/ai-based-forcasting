@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Sales Forecasting System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css', v='2') }}">
+
+        <!-- Shared light and dark theme -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+        
+        <script src="{{ url_for('theme_script') }}"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <script src="{{ url_for('sidebar_script') }}"></script>
+    </head>
+
+<body>
+    <div class="shell">
+
+        <!-- Admin navigation -->
+{% include "sidebar.html" %}
+
+        <!-- Main dashboard -->
+        <div class="main">
+
+            <header class="topbar">
+                <h1 class="admin-page-title">Admin Dashboard</h1>
+
+                <div class="user-chip">
+                    <div class="avatar" aria-hidden="true">A</div>
+                    <span>{{ g.user["username"] }}</span>
+                </div>
+            </header>
+
+            <main class="content admin-content">
+
+                <section id="overview">
+                    <h2 class="section-title">
+                        Account Overview
+                    </h2>
+
+                    <p class="admin-description">
+                        Manage the business accounts that use the system.
+                    </p>
+
+                    <div class="card admin-summary">
+                        <p class="stat-label">
+                            Business Accounts
+                        </p>
+
+                        <p class="stat-value">
+                            {{ business_count }}
+                        </p>
+                    </div>
+                </section>
+
+                <section id="business-accounts" class="card">
+                    <h2 class="section-title">
+                        Business Accounts
+                    </h2>
+                    
+                    <a href="{{ url_for('add_business') }}" class="btn btn-primary admin-create-link">
+                        Add Business Account
+                    </a>
+                    
+                    {% if business_accounts %}
+
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Business Name</th>
+                                    <th scope="col">Business Type</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Date Created</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for account in business_accounts %}
+                                <tr>
+                                    <td>
+                                        {{ account["business_name"] or "Details missing" }}
+                                    </td>
+                                
+                                    <td>
+                                        {{ account["business_type"] or "—" }}
+                                    </td>
+                                
+                                    <td>
+                                        {{ account["username"] }}
+                                    </td>
+                                
+                                    <td>
+                                        {{ account["created_at"].strftime("%b %d, %Y") }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% else %}
+
+                    <div class="empty-state">
+                        <span class="ic" aria-hidden="true">🏪</span>
+
+                        <h3>No business accounts yet</h3>
+
+                        <p>
+                            Business accounts will appear here
+                            after they are created.
+                        </p>
+                    </div>
+
+                    {% endif %}
+                </section>
+
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+    const adminButtons = document.querySelectorAll(
+        ".sidebar button[data-section]"
+    );
+
+    const adminSections = document.querySelectorAll(
+        "#overview, #business-accounts"
+    );
+
+    function showAdminSection(sectionId) {
+        adminButtons.forEach(function (button) {
+            const isActive = button.dataset.section === sectionId;
+
+            button.classList.toggle("active", isActive);
+
+            if (isActive) {
+                button.setAttribute("aria-current", "true");
+            } else {
+                button.removeAttribute("aria-current");
+            }
+        });
+
+        adminSections.forEach(function (section) {
+            section.hidden = section.id !== sectionId;
+        });
+    }
+
+    adminButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            showAdminSection(button.dataset.section);
+        });
+    });
+
+    // Remove the old section anchor so it cannot scroll the page.
+    if (window.location.hash) {
+        history.replaceState(
+            null,
+            "",
+            window.location.pathname + window.location.search
+        );
+    }
+
+    showAdminSection("overview");
+</script>
+    </body>
+    
+    </html>

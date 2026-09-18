@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sales Forecast | FoodCast AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+    <script src="{{ url_for('theme_script') }}"></script>
+    <script src="{{ url_for('sidebar_script') }}"></script>
+</head>
+
+<body>
+    <div class="shell">
+        {% include "business/sidebar.html" %}
+
+        <div class="main">
+            {% include "business/header.html" %}
+
+            <main class="content business-content">
+                <section class="forecast-hero">
+                    <div class="forecast-hero-copy">
+                        <p class="forecast-hero-label">
+                            Today’s expected sales
+                        </p>
+                    
+                        {% if forecast %}
+                        <h2 class="forecast-hero-product">
+                            {{ forecast["product"] }}
+                        </h2>
+                    
+                        <div class="forecast-hero-result">
+                            <p class="forecast-hero-amount">
+                                {{ "{:,.0f}".format(forecast["quantity"]) }}
+                            </p>
+                    
+                            <span class="forecast-hero-unit">
+                                {{ forecast["unit"] }}
+                            </span>
+                        </div>
+                    
+                        <p class="forecast-hero-date">
+                            Expected for
+                            {{ forecast["forecast_date"].strftime("%B %d, %Y") }}
+                        </p>
+                        {% else %}
+                        <p class="forecast-hero-unavailable">
+                            Expected sales are not available yet.
+                        </p>
+                        {% endif %}
+                    </div>
+                
+                    <aside class="forecast-hero-weather" aria-label="Local weather forecast">
+                        <div class="forecast-weather-heading">
+                            <strong>
+                                <span aria-hidden="true">📍</span>
+                
+                                {% if business["location_name"] %}
+                                {{ business["location_name"] }}
+                                {% else %}
+                                Your business location
+                                {% endif %}
+                            </strong>
+                
+                            <button type="button" id="save-business-location" class="forecast-location-button">
+                                <span aria-hidden="true">⌾</span>
+                
+                                {% if business["location_latitude"] is not none %}
+                                Update location
+                                {% else %}
+                                Use precise location
+                                {% endif %}
+                            </button>
+                        </div>
+                
+                        {% for message in get_flashed_messages(
+                        category_filter=["location_success"]
+                        ) %}
+                        <p class="forecast-location-success">
+                            {{ message }}
+                        </p>
+                        {% endfor %}
+                
+                        {% if weather %}
+                        <div class="forecast-weather-days">
+                            <article class="forecast-weather-day">
+                                <span class="forecast-weather-icon" aria-hidden="true">
+                                    {{ weather["today"]["icon"] }}
+                                </span>
+                
+                                <div>
+                                    <span class="forecast-weather-label">
+                                        Today
+                                    </span>
+                
+                                    <strong class="forecast-temperature">
+                                        {{ weather["today"]["temperature"] }}°
+                                    </strong>
+                
+                                    <span>
+                                        {{ weather["today"]["condition"] }}
+                                    </span>
+                
+                                    <small>
+                                        Rain: {{ weather["today"]["rain_chance"] }}%
+                                        · Wind: {{ weather["today"]["wind"] }} km/h
+                                    </small>
+                                </div>
+                            </article>
+                
+                            <article class="forecast-weather-day">
+                                <span class="forecast-weather-icon" aria-hidden="true">
+                                    {{ weather["tomorrow"]["icon"] }}
+                                </span>
+                
+                                <div>
+                                    <span class="forecast-weather-label">
+                                        Tomorrow
+                                    </span>
+                
+                                    <strong class="forecast-temperature">
+                                        {{
+                                        weather["tomorrow"][
+                                        "maximum_temperature"
+                                        ]
+                                        }}°
+                                    </strong>
+                
+                                    <span>
+                                        {{ weather["tomorrow"]["condition"] }}
+                                    </span>
+                
+                                    <small>
+                                        Rain:
+                                        {{
+                                        weather["tomorrow"]["rain_chance"]
+                                        }}%
+                                    </small>
+                                </div>
+                            </article>
+                        </div>
+                
+                        <p class="forecast-weather-advice" data-level="{{ weather['advice_level'] }}">
+                            {{ weather["advice"] }}
+                        </p>
+                
+                        <small class="forecast-weather-source">
+                            Updated {{ weather["updated_time"] }}
+                            · Weather by Open-Meteo
+                        </small>
+                
+                        {% elif weather_error %}
+                        <p class="forecast-weather-message">
+                            {{ weather_error }}
+                        </p>
+                
+                        {% else %}
+                        <p class="forecast-weather-message">
+                            Use your precise business location to see today’s and
+                            tomorrow’s local weather.
+                        </p>
+                        {% endif %}
+                
+                        <span id="location-message" class="forecast-location-message" role="status" aria-live="polite"></span>
+                
+                        <form id="business-location-form" method="post" action="{{ url_for('save_business_location') }}" hidden>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                            <input type="hidden" name="return_to" value="forecasting">
+                
+                            <input type="hidden" id="location-latitude" name="latitude">
+                
+                            <input type="hidden" id="location-longitude" name="longitude">
+                
+                            <input type="hidden" id="location-accuracy" name="accuracy">
+                        </form>
+                    </aside>
+                </section>
+                
+                {% if forecast %}
+                <section class="card">
+                    <h2 class="section-title">
+                        {{ forecast["product"] }}
+                    </h2>
+
+                    <div class="grid grid-3">
+                        <div>
+                            <h3 class="stat-label">
+                                Expected to sell
+                            </h3>
+
+                            <p class="stat-value">
+                                {{ "{:,.0f}".format(forecast["quantity"]) }}
+                            </p>
+
+                            <p class="sales-period">
+                                {{ forecast["unit"] }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="stat-label">
+                                For this date
+                            </h3>
+
+                            <p class="forecast-message">
+                                {{
+                                forecast["forecast_date"].strftime(
+                                "%B %d, %Y"
+                                )
+                                }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="stat-label">
+                                Latest sales used
+                            </h3>
+
+                            <p class="forecast-message">
+                                {{
+                                forecast["history_end"].strftime(
+                                "%B %d, %Y"
+                                )
+                                }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="sales-summary-note">
+                        The model used
+                        {{ forecast["training_records"] }} days of bakery
+                        sales. This is a sample result, not a forecast for
+                        {{ business["business_name"] }}.
+                    </p>
+                </section>
+                {% else %}
+                <section class="card">
+                    <p class="business-error" role="alert">
+                        {{ forecast_error }}
+                    </p>
+                </section>
+                {% endif %}
+
+                <section class="card">
+                    <h2 class="section-title">
+                        How this helps a bakery
+                    </h2>
+
+                    <p class="sales-description">
+                        The expected number helps the owner plan how much to
+                        prepare. For example, if tomorrow’s expected sales are
+                        high, the owner can prepare more ingredients and avoid
+                        running out too early.
+                    </p>
+                </section>
+
+                {% if model_report %}
+                <section class="card">
+                    <h2 class="section-title">
+                        Model test results
+                    </h2>
+
+                    <p class="sales-description">
+                        We tested the model using the final
+                        {{ model_report["test_days"] }} days of known bakery
+                        sales. Lower numbers mean the estimate was closer to
+                        the actual sales.
+                    </p>
+
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Average difference</th>
+                                    <th>Larger-error measure</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Weekly pattern estimate</td>
+                                    <td>
+                                        {{
+                                        "{:,.2f}".format(
+                                        model_report["baseline"]["mae"]
+                                        )
+                                        }}
+                                        pieces
+                                    </td>
+                                    <td>
+                                        {{
+                                        "{:,.2f}".format(
+                                        model_report["baseline"]["rmse"]
+                                        )
+                                        }}
+                                        pieces
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>FoodCast AI model</td>
+                                    <td>
+                                        {{
+                                        "{:,.2f}".format(
+                                        model_report["random_forest"]["mae"]
+                                        )
+                                        }}
+                                        pieces
+                                    </td>
+                                    <td>
+                                        {{
+                                        "{:,.2f}".format(
+                                        model_report["random_forest"]["rmse"]
+                                        )
+                                        }}
+                                        pieces
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p class="sales-summary-note">
+                        FoodCast AI performed better than the weekly pattern
+                        estimate for this bakery dataset. These results only
+                        apply to this sample bakery and do not guarantee the
+                        same result for every business.
+                    </p>
+                </section>
+                {% elif model_error %}
+                <section class="card">
+                    <p class="sales-description">
+                        {{ model_error }}
+                    </p>
+                </section>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const locationButton = document.getElementById(
+            "save-business-location"
+        );
+
+        const locationForm = document.getElementById(
+            "business-location-form"
+        );
+
+        const locationMessage = document.getElementById(
+            "location-message"
+        );
+
+        if (locationButton && locationForm) {
+            locationButton.addEventListener("click", function () {
+                if (!navigator.geolocation) {
+                    locationMessage.textContent =
+                        "This device cannot provide its location.";
+                    return;
+                }
+
+                locationButton.disabled = true;
+                locationMessage.textContent =
+                    "Finding your business location…";
+
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        document.getElementById(
+                            "location-latitude"
+                        ).value =
+                            position.coords.latitude.toFixed(6);
+
+                        document.getElementById(
+                            "location-longitude"
+                        ).value =
+                            position.coords.longitude.toFixed(6);
+
+                        document.getElementById(
+                            "location-accuracy"
+                        ).value =
+                            Math.round(position.coords.accuracy);
+
+                        locationMessage.textContent =
+                            "Saving your business location…";
+
+                        locationForm.submit();
+                    },
+
+                    function (error) {
+                        locationButton.disabled = false;
+
+                        if (error.code === error.PERMISSION_DENIED) {
+                            locationMessage.textContent =
+                                "Allow location access and try again.";
+                        } else if (error.code === error.TIMEOUT) {
+                            locationMessage.textContent =
+                                "Location took too long. Try again.";
+                        } else {
+                            locationMessage.textContent =
+                                "Your location could not be found.";
+                        }
+                    },
+
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    }
+                );
+            });
+        }
+    </script>
+</body>
+
+</html>

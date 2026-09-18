@@ -1,0 +1,94 @@
+{% macro menu_icon(name) %}
+{% set paths = {
+'menu': 'M4 6h16 M4 12h16 M4 18h16',
+'home': 'M3 10l9-7 9 7 M5 9v12h5v-7h4v7h5V9',
+'products': 'M4 7h16v14H4z M8 7V5a4 4 0 0 1 8 0v2',
+'sales': 'M12 3v18 M17 6H9a3 3 0 0 0 0 6h6a3 3 0 0 1 0 6H6',
+'stock': 'M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10',
+'forecast': 'M4 3v17h17 M7 15l4-5 4 3 5-7',
+'tips': 'M9 18h6 M10 22h4 M8.5 14.5a6 6 0 1 1 7 0c-.8.7-1.2 1.8-1.2 3.5H9.7c0-1.7-.4-2.8-1.2-3.5',
+'accounts': 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8 M17 4a4 4 0 0 1 0 7 M22 21v-2a4
+4 0 0 0-3-4',
+'logout': 'M9 4H4v16h5 M9 12h12 M17 8l4 4-4 4'
+} %}
+<svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+    stroke-linejoin="round" aria-hidden="true">
+    <path d="{{ paths[name] }}"></path>
+</svg>
+{% endmacro %}
+
+<aside class="sidebar" id="main-sidebar">
+    <header class="sidebar-brand">
+        <div class="sidebar-brand-images">
+            <img class="sidebar-wordmark wordmark-light" src="{{ url_for('static', filename='images/foodcast-light.png') }}"
+                alt="FoodCast">
+            
+            <img class="sidebar-wordmark wordmark-dark" src="{{ url_for('static', filename='images/foodcast-dark.png') }}"
+                alt="FoodCast">
+        </div>
+    
+        <button type="button" class="sidebar-toggle" aria-controls="main-sidebar" aria-expanded="true"
+            aria-label="Close sidebar" title="Close sidebar">
+            <img class="sidebar-toggle-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="">
+    
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="3"></rect>
+                <path d="M9 4v16"></path>
+            </svg>
+        </button>
+    </header>
+
+    <nav class="sidebar-navigation" aria-label="Main menu">
+        {% if g.user['role'] == 'Admin' %}
+
+        <button type="button" class="nav-item active" data-section="overview" aria-controls="overview"
+            aria-current="true" aria-label="Overview" title="Overview">
+            {{ menu_icon('home') }}
+            <span class="menu-label">Overview</span>
+        </button>
+
+        <button type="button" class="nav-item" data-section="business-accounts" aria-controls="business-accounts"
+            aria-label="Business accounts" title="Business accounts">
+            {{ menu_icon('accounts') }}
+            <span class="menu-label">Business accounts</span>
+        </button>
+
+        {% else %}
+
+        {% set navigation = [
+        ('business_dashboard', 'home', 'Home'),
+        ('business_products', 'products', 'Products'),
+        ('business_sales', 'sales', 'Sales'),
+        ('business_inventory', 'stock', 'Stock'),
+        ('business_forecasting', 'forecast', 'Sales forecast'),
+        ('business_tips', 'tips', 'Business tips')
+        ] %}
+
+        {% for endpoint, icon, label in navigation %}
+        {% set selected = request.endpoint == endpoint %}
+
+        <a href="{{ url_for(endpoint) }}" class="nav-item{% if selected %} active{% endif %}" aria-label="{{ label }}"
+            title="{{ label }}" {% if selected %}aria-current="page" {% endif %}>
+            {{ menu_icon(icon) }}
+            <span class="menu-label">{{ label }}</span>
+        </a>
+        {% endfor %}
+
+        {% endif %}
+    </nav>
+
+    <div class="sidebar-actions">
+
+        <form method="post" action="{{ url_for('logout') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <button type="submit" class="nav-item" aria-label="Sign out" title="Sign out">
+                {{ menu_icon('logout') }}
+                <span class="menu-label">Sign out</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+{% include "shared/product_controls.html" %}

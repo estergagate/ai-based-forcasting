@@ -1,0 +1,235 @@
+/* Tell the browser how to style native controls */
+:root {
+    color-scheme: light;
+}
+
+/* Override the shared colors when dark mode is enabled */
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    --cream: #151b18;
+    --card: #202923;
+
+    --green: #477b59;
+    --green-dark: #a6d9b6;
+    --green-light: #2b4033;
+
+    --orange: #b96c32;
+    --orange-light: #403124;
+    --brown: #efbd8a;
+
+    --ink: #edf3ee;
+    --ink-soft: #bbc8be;
+    --border: #405047;
+
+    --red: #ffb4a5;
+    --red-light: #452a28;
+
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Some original components use fixed white backgrounds */
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .btn-outline,
+html[data-theme="dark"] .period-btn,
+html[data-theme="dark"] .rec-card {
+    background: var(--card);
+    color: var(--ink);
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+    background: var(--card);
+    color: var(--ink);
+    border-color: var(--border);
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: var(--ink-soft);
+}
+
+/* Keep sidebar text readable against a dark background */
+html[data-theme="dark"] .sidebar {
+    background: #1b3326;
+}
+
+html[data-theme="dark"] .btn-primary {
+    background: #477b59;
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .btn-primary:hover {
+    background: #386847;
+}
+
+html[data-theme="dark"] .tip-card p {
+    color: var(--ink);
+}
+
+html[data-theme="dark"] .qa-btn:hover {
+    background: #36513f;
+}
+
+/* Dark-mode switch beside the profile icon */
+body {
+    padding-bottom: 0;
+}
+
+.header-account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Small sliding theme switch beside the profile icon */
+.header-account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+.theme-toggle {
+    position: relative;
+
+    width: 88px;
+    height: 46px;
+    padding: 4px;
+
+    color: #8c96a8;
+    background: #d9dee8;
+    border: 1px solid #c2c9d5;
+    border-radius: 999px;
+    box-shadow: inset 0 2px 5px rgba(30, 40, 60, 0.16);
+
+    cursor: pointer;
+}
+
+.theme-toggle-text {
+    display: none;
+}
+
+.theme-toggle-icon {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+
+    display: grid;
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
+
+    color: #8c96a8;
+    background: #f7f8fb;
+    border: 1px solid rgba(80, 92, 115, 0.18);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(40, 50, 70, 0.25);
+
+    transition: transform 220ms ease, background 220ms ease, color 220ms ease;
+}
+
+.theme-toggle-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.theme-moon-icon {
+    display: none;
+}
+
+.theme-toggle:hover {
+    border-color: #9ba6b9;
+}
+
+.theme-toggle:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 3px;
+}
+
+/* Dark mode: the circle slides to the right */
+.theme-toggle[aria-pressed="true"] {
+    color: #b9c0d4;
+    background: #2d354c;
+    border-color: #20263a;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.theme-toggle[aria-pressed="true"] .theme-toggle-icon {
+    transform: translateX(40px);
+
+    color: #d0d6e5;
+    background: #7d88a3;
+    border-color: #9ea8be;
+}
+
+.theme-toggle[aria-pressed="true"] .theme-sun-icon {
+    display: none;
+}
+
+.theme-toggle[aria-pressed="true"] .theme-moon-icon {
+    display: block;
+}
+
+@media (max-width: 700px) {
+    .header-account-actions {
+        gap: 3px;
+    }
+
+    .theme-toggle {
+        width: 76px;
+        height: 42px;
+    }
+
+    .theme-toggle-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .theme-toggle[aria-pressed="true"] .theme-toggle-icon {
+        transform: translateX(34px);
+    }
+}
+/* Don't include the theme button in printed pages */
+@media print {
+    .theme-toggle {
+        display: none;
+    }
+
+    body {
+        padding-bottom: 0;
+    }
+}
+/* Shared typography */
+body,
+body * {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    letter-spacing: normal;
+}
+
+button,
+.btn {
+    font-weight: 600;
+}
+
+/* Login and registration have no floating theme button */
+body.admin-login-page {
+    padding: 16px;
+}

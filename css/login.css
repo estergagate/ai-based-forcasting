@@ -1,0 +1,372 @@
+/* ========================================
+   ADMIN LOGIN PAGE
+   ======================================== */
+
+/* Center the card within the browser window */
+.admin-login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--cream);
+}
+
+/* White container around the login content */
+.admin-login-card {
+    width: 100%;
+    max-width: 520px;
+    padding: 36px;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+/* Logo and introductory text */
+.admin-login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.admin-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+
+    font-size: 34px;
+    background: var(--green-light);
+    border-radius: 16px;
+}
+
+.admin-label {
+    margin-bottom: 10px;
+
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.admin-login-header h1 {
+    color: var(--green-dark);
+    font-size: 24px;
+    line-height: 1.3;
+}
+
+.admin-description {
+    margin-top: 12px;
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+
+/* Input labels and fields */
+.login-field {
+    margin-bottom: 20px;
+}
+
+.login-field label {
+    display: block;
+    margin-bottom: 8px;
+
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.login-field input {
+    width: 100%;
+    padding: 12px 14px;
+
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+}
+
+.login-field input:focus {
+    border-color: var(--green);
+    outline: 2px solid var(--green-light);
+    outline-offset: 2px;
+}
+
+/* Preview message and return link */
+.admin-preview-note {
+    margin-top: 16px;
+
+    color: var(--ink-soft);
+    font-size: 12px;
+    text-align: center;
+}
+
+.admin-login-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.admin-login-footer a {
+    color: var(--green-dark);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.admin-login-footer a:hover {
+    color: var(--orange);
+}
+
+/* Reduce spacing on small screens */
+@media (max-width: 480px) {
+    .admin-login-card {
+        padding: 28px 22px;
+    }
+
+    .admin-login-header h1 {
+        font-size: 21px;
+    }
+}
+/* Shared sign-in and registration text */
+.login-description {
+    margin-top: 12px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.account-hint {
+    margin-bottom: 20px;
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+
+.field-help {
+    margin-top: 8px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Match dropdowns to the existing input fields */
+.login-field select {
+    width: 100%;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+}
+
+.login-field input {
+    font: inherit;
+}
+
+.login-field select:focus {
+    border-color: var(--green);
+    outline: 2px solid var(--green-light);
+    outline-offset: 2px;
+}
+
+/* Password visibility */
+.account-show-password {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    color: var(--ink);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.account-show-password input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--green);
+}
+
+/* Clear form messages */
+.account-error,
+.account-success {
+    margin-bottom: 20px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.account-error {
+    border-left: 4px solid var(--orange);
+}
+
+.account-success {
+    border-left: 4px solid var(--green);
+    background: var(--green-light);
+}
+/* Compact sign-in layout */
+body.signin-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.signin-page .admin-login-card {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 440px;
+    margin-block: auto;
+    padding: 24px;
+    border-radius: 14px;
+}
+
+.signin-page .admin-login-header {
+    margin-bottom: 20px;
+}
+
+.signin-logo {
+    display: block;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 10px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.signin-page .admin-login-header h1 {
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+.signin-system-name {
+    margin-top: 8px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.signin-page .login-description {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.signin-page .login-field {
+    margin-bottom: 14px;
+}
+
+.signin-page .login-field label {
+    margin-bottom: 6px;
+}
+
+.signin-page .login-field input {
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 16px;
+}
+
+.signin-page .btn {
+    min-height: 44px;
+    padding: 10px 16px;
+}
+
+.signin-page .admin-login-footer {
+    margin-top: 16px;
+    padding-top: 14px;
+    font-size: 14px;
+}
+
+.signin-page .login-error {
+    margin-bottom: 12px;
+    color: var(--red);
+    font-size: 14px;
+}
+
+.signin-page .account-success {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+}
+
+/* Reduce spacing further on short screens */
+@media (max-height: 650px) {
+    .signin-page .admin-login-card {
+        padding: 18px 22px;
+    }
+
+    .signin-logo {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 8px;
+    }
+
+    .signin-page .admin-login-header {
+        margin-bottom: 14px;
+    }
+
+    .signin-page .login-field {
+        margin-bottom: 10px;
+    }
+
+    .signin-page .admin-login-footer {
+        margin-top: 12px;
+        padding-top: 10px;
+    }
+}
+/* Login wordmark: hide the image's transparent margins */
+.signin-brand {
+    position: relative;
+    width: 180px;
+    height: 42px;
+    margin: 0 auto 10px;
+    overflow: hidden;
+}
+
+.signin-wordmark {
+    position: absolute;
+    top: 50%;
+    left: -7%;
+    width: 115%;
+    max-width: none;
+    height: auto;
+    transform: translateY(-50%);
+}
+
+.signin-wordmark-light {
+    display: block;
+}
+
+.signin-wordmark-dark {
+    display: none;
+}
+
+html[data-theme="dark"] .signin-wordmark-light {
+    display: none;
+}
+
+html[data-theme="dark"] .signin-wordmark-dark {
+    display: block;
+}
+/* Circular logo above the FoodCast wordmark */
+.signin-circle-logo {
+    display: block;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 6px;
+    object-fit: contain;
+}
+
+/* Keep the login compact on shorter screens */
+@media (max-height: 650px) {
+    .signin-circle-logo {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 4px;
+    }
+}

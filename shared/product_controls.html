@@ -1,0 +1,10 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='product_tools.css') }}">
+<script src="{{ url_for('product_tools_script') }}" defer></script>
+<dialog id="action-confirm" class="tools-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <h2 id="confirm-title">Please confirm</h2>
+    <p id="confirm-message"></p>
+    <div class="tools-buttons">
+        <button type="button" class="btn btn-outline" id="confirm-no" autofocus>No</button>
+        <button type="button" class="btn btn-primary" id="confirm-yes">Yes</button>
+    </div>
+</dialog>

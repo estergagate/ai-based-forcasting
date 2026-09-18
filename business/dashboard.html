@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home | FoodCast AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+    <script src="{{ url_for('theme_script') }}"></script>
+    <script src="{{ url_for('sidebar_script') }}"></script>
+</head>
+
+<body class="foodcast-home">
+    <div class="shell">
+        {% include "business/sidebar.html" %}
+
+        <div class="main">
+{% include "business/header.html" %}
+
+<main class="content home-content">
+<section class="home-hero">
+    <div class="home-hero-heading">
+        <div class="home-hero-meta">
+            <span>● Today</span>
+            <span>Updated <time id="home-hero-updated">now</time></span>
+        </div>
+
+        <h2>Welcome back, {{ business["business_name"] }}</h2>
+
+        <p>
+            Here is a quick look at how your business is doing today.
+        </p>
+    </div>
+
+    <div class="home-hero-side">
+        <div class="home-hero-clock">
+            <span id="home-date">
+                {{ today.strftime("%A, %B %d, %Y") }}
+            </span>
+
+            <time id="home-time"></time>
+
+            <small>Philippine time</small>
+        </div>
+
+        <div class="home-hero-actions">
+            <a href="{{ url_for('business_sales') }}" class="home-hero-button home-hero-button-muted">
+                Record sales
+            </a>
+
+            <a href="{{ url_for('business_forecasting') }}" class="home-hero-button">
+                View forecast →
+            </a>
+        </div>
+    </div>
+</section>
+
+<section aria-label="Sales summary">
+    <div class="home-summary">
+        <article class="card home-metric-card">
+            <div class="home-metric-heading">
+                <h3>Today’s sales</h3>
+                <span aria-hidden="true">₱</span>
+            </div>
+
+            <p class="home-total">
+                ₱{{ "{:,.2f}".format(totals["today_sales"]) }}
+            </p>
+
+            <p class="home-note">
+                {{ today.strftime("%b %d, %Y") }}
+            </p>
+        </article>
+
+        <article class="card home-metric-card">
+            <div class="home-metric-heading">
+                <h3>This week’s sales</h3>
+                <span aria-hidden="true">↗</span>
+            </div>
+
+            <p class="home-total">
+                ₱{{ "{:,.2f}".format(totals["week_sales"]) }}
+            </p>
+
+            <p class="home-note">
+                {{ week_start.strftime("%b %d") }}
+                – {{ today.strftime("%b %d") }}
+            </p>
+        </article>
+
+        <article class="card home-metric-card">
+            <div class="home-metric-heading">
+                <h3>This month’s sales</h3>
+                <span aria-hidden="true">▣</span>
+            </div>
+
+            <p class="home-total">
+                ₱{{ "{:,.2f}".format(totals["month_sales"]) }}
+            </p>
+
+            <p class="home-note">
+                {{ month_start.strftime("%b %d") }}
+                – {{ today.strftime("%b %d") }}
+            </p>
+        </article>
+    </div>
+</section>
+                <div class="home-columns">
+                    <section class="card">
+                        <h2 class="section-title">Sales over the last 7 days</h2>
+                        <p class="home-note">
+                            {{ chart_start.strftime("%b %d") }}
+                            – {{ today.strftime("%b %d, %Y") }}.
+                            Today’s total grows as you record sales.
+                        </p>
+
+                        <ul class="home-trend">
+                            {% for day in chart_days %}
+                            <li>
+                                <div class="home-trend-label">
+                                    <span>{{ day["date"].strftime("%a, %b %d") }}</span>
+                                    <strong>
+                                        {% if day["has_records"] %}
+                                        ₱{{ "{:,.2f}".format(day["amount"]) }}
+                                        {% else %}
+                                        No sales entered
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="home-trend-track" aria-hidden="true">
+                                    <div class="home-trend-bar" data-percentage="{{ day['percentage'] }}"></div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+
+                    <section class="card">
+                        <h2 class="section-title">Best sellers this month</h2>
+                        <p class="home-note">
+                            Your top five products by total sales amount.
+                        </p>
+
+                        {% if top_products %}
+                        <ol class="home-products">
+                            {% for product in top_products %}
+                            <li>
+                                <div>
+                                    <strong>{{ product["product_name"] }}</strong>
+                                    <p class="home-note">
+                                        {{ product["quantity"] }}
+                                        {{ product["selling_unit"] }} sold
+                                    </p>
+                                </div>
+
+                                <strong class="home-product-amount">
+                                    ₱{{ "{:,.2f}".format(product["revenue"]) }}
+                                </strong>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                        {% else %}
+                        <div class="home-empty">
+                            <p>No best sellers to show yet.</p>
+                            <p class="home-note">
+                                Products will appear here once you save
+                                sales with an amount above zero this month.
+                            </p>
+                        </div>
+                        {% endif %}
+                    </section>
+                </div>
+
+                <section class="card home-stock-card">
+                    {% if stock_alerts %}
+                    <div class="home-stock-alert">
+                        <div class="home-stock-alert-icon" aria-hidden="true">
+                            !
+                        </div>
+                
+                        <div class="home-stock-alert-message">
+                            <h2>
+                                <span class="home-stock-alert-title">
+                                    Low stock
+                                </span>
+                
+                                <span class="home-stock-alert-count">
+                                    {{ stock_alerts | length }}
+                                    product{% if stock_alerts | length != 1 %}s{% endif %}
+                                    need attention
+                                </span>
+                            </h2>
+                        </div>
+                
+                        <a class="home-stock-alert-button" href="{{ url_for('business_inventory') }}">
+                            Manage stock →
+                        </a>
+                    </div>
+                
+                    <div class="table-scroll">
+                        <table class="home-stock-table">
+                            <colgroup>
+                                <col class="home-stock-product-column">
+                                <col class="home-stock-available-column">
+                                <col class="home-stock-step-column">
+                                <col class="home-stock-view-column">
+                            </colgroup>
+                
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Available stock</th>
+                                    <th scope="col">Suggested step</th>
+                                    <th scope="col">View</th>
+                                </tr>
+                            </thead>
+                
+                            <tbody>
+                                {% for product in stock_alerts %}
+                                <tr>
+                                    <td>{{ product["product_name"] }}</td>
+                
+                                    <td>
+                                        {{ product["available"] }}
+                                        {{ product["selling_unit"] }}
+                                    </td>
+                
+                                    <td>
+                                        {% if product["available"] < 0 %} Review stock entries. {% else %} Add or update stock. {% endif
+                                            %} </td>
+                
+                                    <td class="home-stock-view-cell">
+                                        <a class="home-stock-view-link" href="{{ url_for(
+                                                'business_products',
+                                                search=product['product_name']
+                                            ) }}" aria-label="View {{ product['product_name'] }}" title="View product">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                                                <circle cx="12" cy="12" r="2.5"></circle>
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                
+                    {% else %}
+                    <div class="home-stock-alert home-stock-clear">
+                        <div class="home-stock-alert-icon" aria-hidden="true">
+                            ✓
+                        </div>
+                
+                        <div class="home-stock-alert-message">
+                            <h2>
+                                <span class="home-stock-alert-title">
+                                    Stock looks good
+                                </span>
+                
+                                <span class="home-stock-alert-count">
+                                    No products need a stock check right now.
+                                </span>
+                            </h2>
+                        </div>
+                
+                        <a class="home-stock-alert-button" href="{{ url_for('business_inventory') }}">
+                            View stock →
+                        </a>
+                    </div>
+                    {% endif %}
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+
+    const dateLabel = document.getElementById("home-date");
+        const timeLabel = document.getElementById("home-time");
+
+        const dateFormat = new Intl.DateTimeFormat("en-PH", {
+            timeZone: "Asia/Manila",
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+
+        const timeFormat = new Intl.DateTimeFormat("en-PH", {
+            timeZone: "Asia/Manila",
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        });
+
+        function updateClock() {
+            const now = new Date();
+
+            dateLabel.textContent = dateFormat.format(now);
+            timeLabel.textContent = timeFormat.format(now);
+            timeLabel.dateTime = now.toISOString();
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Draw the sales bars using values supplied by Flask.
+        document.querySelectorAll(".home-trend-bar").forEach(function (bar) {
+            const percentage = Number(bar.dataset.percentage);
+
+            if (Number.isFinite(percentage)) {
+                bar.style.width =
+                    Math.max(0, Math.min(100, percentage)) + "%";
+            }
+        });
+
+    </script>
+</body>
+
+</html>

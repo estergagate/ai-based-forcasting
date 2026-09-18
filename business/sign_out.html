@@ -1,0 +1,9 @@
+<form method="post" action="{{ url_for('logout') }}" class="business-sign-out">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <button type="submit" class="nav-item">
+        <span class="ic" aria-hidden="true">↪</span>
+        Sign Out
+    </button>
+</form>

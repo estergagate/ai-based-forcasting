@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Products | FoodCast AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <script src="{{ url_for('theme_script') }}"></script>
+    <script src="{{ url_for('sidebar_script') }}"></script>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='dashboard.css') }}"
+    >
+</head>
+<body><div class="shell">
+    {% include 'business/sidebar.html' %}
+    <div class="main">
+    {% include "business/header.html" %}
+        <main class="content business-content">
+    <section class="products-hero">
+        <div>
+            <p class="products-hero-label">
+                Product management
+            </p>
+
+            <h2>Manage your products</h2>
+
+            <p>
+                Add, import, and update the food items you sell.
+                Keeping prices and units updated makes sales records
+                easier to save.
+            </p>
+        </div>
+
+        <div class="products-hero-actions">
+            <a
+                href="#add-product"
+                class="products-hero-button products-hero-button-muted"
+            >
+                Add a product
+            </a>
+
+            <a
+                href="{{ url_for('product_import') }}"
+                class="products-hero-button"
+            >
+                Import Excel →
+            </a>
+        </div>
+    </section>
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+            <p class="{{ 'business-error' if category == 'product_error' else 'business-success' }}" role="status">{{ message }}</p>
+            {% endfor %}
+            {% for error in errors %}<p class="business-error" role="alert">{{ error }}</p>{% endfor %}
+            <section id="add-product" class="card add-product-card">
+                <div class="tools-heading">
+                    <h2 class="section-title">Add a product</h2>
+                    <a class="btn btn-outline" href="{{ url_for('product_import') }}">Import Excel file</a>
+                </div>
+                <form method="post" action="{{ url_for('business_products') }}" class="entry-form entry-form-products">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="field"><label for="product_name">Product name</label><input id="product_name" name="product_name" value="{{ values.product_name }}" maxlength="100" required></div>
+                    <div class="field">
+                        <label id="unit-label">How do you sell it?</label>
+                        <input type="hidden" name="selling_unit" id="chosen-unit" value="{{ values.selling_unit }}">
+                        <details class="unit-picker" id="unit-picker">
+                            <summary aria-labelledby="unit-label unit-choice"><span id="unit-choice">{{ values.selling_unit or 'Choose a unit' }}</span><span aria-hidden="true">▼</span></summary>
+                            <div class="unit-options">
+                                {% for unit in units %}
+                                <div class="unit-option">
+                                    <button type="button" data-pick-unit="{{ unit.name }}">{{ unit.name }}</button>
+                                    <button type="button" class="unit-x" data-delete-unit="{{ unit.unit_id }}" data-unit-name="{{ unit.name }}" aria-label="Delete {{ unit.name }}">×</button>
+                                </div>
+                                {% endfor %}
+                                <button type="button" class="unit-add" data-open-units>＋ Add more</button>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="field"><label for="selling_price">Price per unit (₱)</label><input type="number" id="selling_price" name="selling_price" value="{{ values.selling_price }}" min="0" max="99999999.99" step="0.01" required></div>
+                    <button class="btn btn-primary">Save product</button>
+                </form>
+                <p class="tools-help">Choose or add a unit before saving. Excel import lets you match columns and review products first.</p>
+            </section>
+            <section class="card products-results-card">
+                <div class="tools-heading">
+                    <h2 class="section-title">Your products</h2>
+
+                    <a
+                        class="btn btn-outline"
+                        href="{{ url_for('export_products', search=search) }}"
+                    >
+                        {{ 'Export results' if search else 'Export Excel' }}
+                    </a>
+                </div>
+                {% if products %}
+                <div class="table-scroll"><table id="products-table">
+                    <thead><tr><th>Product</th><th>Unit</th><th>Price</th><th>Action</th></tr></thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr data-product-row data-product-name="{{ product.product_name | lower }}">
+                            <td>{{ product.product_name }}</td>
+                    
+                            <td>{{ product.selling_unit }}</td>
+                    
+                            <td>
+                                ₱{{ '{:,.2f}'.format(product.selling_price) }}
+                            </td>
+                    
+                            <td>
+                                <a href="{{ url_for(
+                                        'edit_product',
+                                        product_id=product.product_id
+                                    ) }}">
+                                    Edit
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table></div>
+
+<p id="product-search-empty" hidden>
+    No products match your search.
+</p>
+                {% else %}<p>{{ 'No products match your search.' if search else 'No products yet. Add one or import your Excel list.' }}</p>{% endif %}
+            </section>
+        </main>
+    </div>
+</div>
+{% include 'business/unit_manager.html' %}
+<script>
+    const productSearch = document.getElementById("product_search");
+    const clearProductSearch = document.getElementById(
+        "clear-product-search"
+    );
+    const productRows = document.querySelectorAll(
+        "[data-product-row]"
+    );
+
+    if (productSearch) {
+        function filterProducts() {
+            const searchText = productSearch.value
+                .trim()
+                .toLowerCase();
+
+            let matchingProducts = 0;
+
+            productRows.forEach(function (row) {
+                const matches = row.dataset.productName.includes(
+                    searchText
+                );
+
+                row.hidden = !matches;
+
+                if (matches) {
+                    matchingProducts += 1;
+                }
+            });
+
+            clearProductSearch.hidden = searchText.length === 0;
+
+            document.body.classList.toggle(
+                "product-search-active",
+                searchText.length > 0
+            );
+
+            document.getElementById("product-search-empty").hidden =
+                searchText.length === 0 || matchingProducts > 0;
+        }
+
+        productSearch.addEventListener("input", filterProducts);
+
+        filterProducts();
+
+        clearProductSearch.addEventListener("click", function () {
+            productSearch.value = "";
+            filterProducts();
+            productSearch.focus();
+        });
+    }
+</script>
+</body>
+</html>

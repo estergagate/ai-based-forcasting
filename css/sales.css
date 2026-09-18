@@ -1,0 +1,283 @@
+/* A simple two-section sales page */
+.sales-page {
+    display: grid;
+    gap: 22px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.sales-page>.card {
+    min-width: 0;
+    padding: 24px;
+}
+
+.sales-page .section-title {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.sales-help {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Product sales entry */
+.sales-entry {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.sales-entry>input[type="hidden"] {
+    display: none;
+}
+
+.sales-field {
+    min-width: 0;
+}
+
+.sales-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sales-field input,
+.sales-field select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--ink);
+    font-size: 14px;
+}
+
+.sales-field input:focus-visible,
+.sales-field select:focus-visible,
+.sales-page summary:focus-visible,
+.sales-page a:focus-visible,
+.sales-page button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+}
+
+.sales-entry-footer {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.sales-entry-footer .sales-help {
+    max-width: 580px;
+}
+
+.sales-entry-footer .btn {
+    flex-shrink: 0;
+}
+
+/* Keep extra explanations out of the main form */
+.sales-guidance {
+    margin-top: 16px;
+}
+
+.sales-page summary {
+    width: fit-content;
+    padding: 6px 0;
+    color: var(--green-dark);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sales-guidance p {
+    max-width: 720px;
+    margin: 10px 0 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Saved sales and date controls */
+.sales-list-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.sales-list-heading .section-title {
+    margin: 0;
+}
+
+.sales-page a.btn {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+
+.sales-date-options {
+    margin-bottom: 16px;
+}
+
+.sales-date-form {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.sales-date-form .sales-field {
+    flex: 1 1 170px;
+    max-width: 240px;
+}
+
+.sales-text-link {
+    color: var(--green-dark);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sales-date-form .sales-text-link {
+    padding: 12px 0;
+}
+
+/* One quiet summary instead of nested cards */
+.sales-total-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.sales-total-strip strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 24px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.sales-table {
+    margin-top: 8px;
+}
+
+.sales-table th {
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 13px;
+}
+
+.sales-table th,
+.sales-table td {
+    padding: 14px 10px;
+}
+
+.sales-money {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.sales-list-note {
+    margin-top: 14px;
+}
+
+.sales-empty {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    padding: 20px 0 8px;
+    font-size: 14px;
+}
+
+.sales-page .business-error {
+    margin-top: 14px;
+}
+
+/* Responsive layout */
+@media (max-width: 1100px) {
+    .sales-entry {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .sales-page>.card {
+        padding: 18px;
+    }
+
+    .sales-entry {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sales-entry-footer {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sales-date-form .sales-field {
+        max-width: none;
+    }
+}
+/* Keep the sales section visible below the fixed header */
+#your-sales {
+    scroll-margin-top: 110px;
+}
+/* Product search in saved sales */
+.sales-search-form {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 14px;
+}
+
+.sales-search-form label {
+    width: 100%;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sales-search-form input[type="search"] {
+    width: min(320px, 100%);
+    min-height: 42px;
+    padding: 10px 12px;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.sales-search-form input:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+
+    .sales-search-form input[type="search"],
+    .sales-search-form .btn {
+        width: 100%;
+    }
+}

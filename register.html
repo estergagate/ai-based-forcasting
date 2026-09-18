@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create an account | AI-Based Sales Forecasting</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <script src="{{ url_for('theme_script') }}"></script>
+</head>
+
+<body class="admin-login-page">
+    <main class="admin-login-card">
+        <header class="admin-login-header">
+            <span class="admin-logo" aria-hidden="true">🍲</span>
+
+            <h1>Create your business account</h1>
+
+            <p class="login-description">
+                Keep track of your products, daily sales, and stock
+                in one place.
+            </p>
+        </header>
+
+        {% if error %}
+        <p class="account-error" role="alert">{{ error }}</p>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('register') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <p class="account-hint">Please fill in all fields.</p>
+
+            <div class="login-field">
+                <label for="business_name">Business name</label>
+                <input type="text" id="business_name" name="business_name" value="{{ values.business_name }}"
+                    placeholder="Example: Maria's Bakery" autocomplete="organization" maxlength="100" required>
+            </div>
+
+            <div class="login-field">
+                <label for="business_type">Type of business</label>
+                <select id="business_type" name="business_type" required>
+                    <option value="">Choose your business type</option>
+
+                    {% for business_type in ['Bakery', 'Carinderia', 'Food Stall'] %}
+                    <option value="{{ business_type }}" {% if values.business_type==business_type %}selected{% endif %}>
+                        {{ business_type }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="login-field">
+                <label for="username">Choose a username</label>
+                <input type="text" id="username" name="username" value="{{ values.username }}"
+                    placeholder="Example: mariasbakery" autocomplete="username" autocapitalize="none" spellcheck="false"
+                    maxlength="50" aria-describedby="username-help" required>
+                <p id="username-help" class="field-help">
+                    You’ll use this to sign in. Do not include spaces.
+                </p>
+            </div>
+
+            <div class="login-field">
+                <label for="password">Create a password</label>
+                <input type="password" id="password" name="password" autocomplete="new-password" minlength="12"
+                    maxlength="128" aria-describedby="password-help" required>
+                <p id="password-help" class="field-help">
+                    Use 12 or more characters. A few words together
+                    can be easier to remember.
+                </p>
+            </div>
+
+            <div class="login-field">
+                <label for="confirm_password">Enter your password again</label>
+                <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password"
+                    minlength="12" maxlength="128" required>
+            </div>
+
+            <label class="account-show-password">
+                <input type="checkbox" id="show-passwords">
+                <span>Show passwords</span>
+            </label>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                Create account
+            </button>
+        </form>
+
+        <footer class="admin-login-footer">
+            <p>
+                Already have an account?
+                <a href="{{ url_for('login') }}">Sign in</a>
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        const showPasswords = document.getElementById("show-passwords");
+
+        showPasswords.addEventListener("change", function () {
+            const inputType = this.checked ? "text" : "password";
+
+            document.getElementById("password").type = inputType;
+            document.getElementById("confirm_password").type = inputType;
+        });
+    </script>
+</body>
+
+</html>

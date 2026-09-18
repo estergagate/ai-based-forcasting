@@ -1,0 +1,257 @@
+{% macro profile_menu() %}
+<details class="home-profile">
+    <summary>
+        <span class="avatar" aria-hidden="true">
+            {{ g.user["username"][0] | upper }}
+        </span>
+    </summary>
+
+    <section class="profile-panel" aria-label="My profile">
+        <h2>My profile</h2>
+
+        <dl>
+            <div>
+                <dt>Business name</dt>
+                <dd>{{ business["business_name"] }}</dd>
+            </div>
+
+            <div>
+                <dt>Business type</dt>
+                <dd>{{ business["business_type"] }}</dd>
+            </div>
+
+            <div>
+                <dt>Username</dt>
+                <dd>{{ g.user["username"] }}</dd>
+            </div>
+
+            <div>
+                <dt>Member since</dt>
+                <dd>{{ business["created_at"].strftime("%B %d, %Y") }}</dd>
+            </div>
+        </dl>
+    </section>
+</details>
+{% endmacro %}
+
+{% macro theme_toggle() %}
+<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Switch color mode" aria-pressed="false"
+    title="Turn dark mode on">
+    <span class="theme-toggle-text">Light mode</span>
+
+    <span class="theme-toggle-icon" aria-hidden="true">
+        <svg class="theme-sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41">
+            </path>
+        </svg>
+
+        <svg class="theme-moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round">
+            <path d="M20.8 13.1A9 9 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"></path>
+        </svg>
+    </span>
+</button>
+{% endmacro %}
+
+{% macro home_top_menus() %}
+<details class="home-top-menu">
+    <summary aria-label="Quick actions" title="Quick actions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"></path>
+        </svg>
+    </summary>
+
+    <section class="home-top-panel home-quick-panel" aria-label="Quick actions">
+        <h2>Quick actions</h2>
+
+        <a href="{{ url_for('business_sales') }}"><span aria-hidden="true">＋</span>Record sales</a>
+        <a href="{{ url_for('business_products') }}"><span aria-hidden="true">□</span>Add a product</a>
+        <a href="{{ url_for('business_inventory') }}"><span aria-hidden="true">▣</span>Update stock</a>
+        <a href="{{ url_for('business_tips') }}"><span aria-hidden="true">✦</span>View business tips</a>
+    </section>
+</details>
+
+<details class="home-top-menu home-weather-menu">
+    <summary aria-label="Weather forecast" title="Weather forecast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M17.5 18.5H7.8a4.3 4.3 0 1 1 .7-8.55A5.2 5.2 0 0 1 18.1 12a3.25 3.25 0 0 1-.6 6.5Z"></path>
+        </svg>
+    </summary>
+
+<section class="home-top-panel home-weather-panel" aria-label="Today's local weather">
+    <div class="home-weather-topline">
+        <h2>
+            <span aria-hidden="true">📍</span>
+
+            {% if business["location_name"] %}
+            {{ business["location_name"] }}
+            {% else %}
+            Your business location
+            {% endif %}
+        </h2>
+
+        <a href="{{ url_for('business_forecasting') }}" class="home-weather-location" aria-label="Update location"
+            title="Update location">
+            ⊙
+        </a>
+    </div>
+
+    {% if weather %}
+    <article class="home-top-weather-today">
+        <span class="home-top-weather-icon" aria-hidden="true">
+            {{ weather["today"]["icon"] }}
+        </span>
+
+        <div>
+            <small>Today</small>
+            <strong>{{ weather["today"]["temperature"] }}°</strong>
+            <p>{{ weather["today"]["condition"] }}</p>
+            <span>
+                Rain: {{ weather["today"]["rain_chance"] }}%
+                · Wind: {{ weather["today"]["wind"] }} km/h
+            </span>
+        </div>
+    </article>
+
+    <p class="home-top-weather-advice">
+        {{ weather["advice"] }}
+    </p>
+
+    {% elif weather_error %}
+    <p class="home-top-weather-message">{{ weather_error }}</p>
+
+    {% else %}
+    <p class="home-top-weather-message">
+        Set your business location to see today’s local weather.
+    </p>
+    {% endif %}
+</section>
+</details>
+{% endmacro %}
+
+{% set page_titles = {
+'business_dashboard': 'Home',
+'business_forecasting': 'Sales Forecast',
+'business_tips': 'Business Tips'
+} %}
+
+{% if request.endpoint == "business_products" %}
+<div class="page-search-row">
+    <div class="page-header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m20 20-4.2-4.2"></path>
+        </svg>
+
+        <input id="product_search" type="search" placeholder="Search product" autocomplete="off"
+            aria-label="Search product">
+
+        <button id="clear-product-search" type="button" aria-label="Clear product search" title="Clear search"
+            hidden>×</button>
+    </div>
+
+    <div class="header-account-actions">
+    {{ theme_toggle() }}
+    {{ profile_menu() }}
+</div>
+</div>
+
+{% elif request.endpoint == "business_sales" %}
+<div class="page-search-row">
+    <div class="page-header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m20 20-4.2-4.2"></path>
+        </svg>
+
+        <input id="sales_live_search" type="search" placeholder="Search sales" autocomplete="off"
+            aria-label="Search sales">
+
+        <button id="clear-sales-live-search" type="button" aria-label="Clear sales search" title="Clear search"
+            hidden>×</button>
+    </div>
+
+    <div class="header-account-actions">
+    {{ theme_toggle() }}
+    {{ profile_menu() }}
+</div>
+</div>
+
+{% elif request.endpoint == "business_inventory" %}
+<div class="page-search-row">
+    <div class="page-header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m20 20-4.2-4.2"></path>
+        </svg>
+
+        <input id="stock_live_search" type="search" placeholder="Search stock" autocomplete="off"
+            aria-label="Search stock">
+
+        <button id="clear-stock-live-search" type="button" aria-label="Clear stock search" title="Clear search"
+            hidden>×</button>
+    </div>
+
+    <div class="header-account-actions">
+    {{ theme_toggle() }}
+    {{ profile_menu() }}
+</div>
+</div>
+
+{% elif request.endpoint == "business_dashboard" %}
+<div class="minimal-page-actions home-page-actions">
+    <div class="home-left-actions">
+        {{ home_top_menus() }}
+    </div>
+
+    <div class="header-account-actions">
+        {{ theme_toggle() }}
+        {{ profile_menu() }}
+    </div>
+</div>
+
+{% else %}
+<div class="minimal-page-actions">
+    <div class="header-account-actions">
+        {{ theme_toggle() }}
+        {{ profile_menu() }}
+    </div>
+</div>
+{% endif %}
+
+<a href="#user-manual" class="user-manual-button" aria-label="Open user manual" title="User manual">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H12v17H7.5A3.5 3.5 0 0 0 4 22V5.5Z"></path>
+        <path d="M20 5.5A3.5 3.5 0 0 0 16.5 2H12v17h4.5A3.5 3.5 0 0 1 20 22V5.5Z"></path>
+        <circle cx="12" cy="6.5" r="1.4"></circle>
+        <path d="M12 10v4"></path>
+    </svg>
+</a>
+
+<script>
+    (function () {
+        const profile = document.querySelector(".home-profile");
+
+        if (!profile) return;
+
+        document.addEventListener("click", function (event) {
+            if (!profile.contains(event.target)) profile.open = false;
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && profile.open) {
+                profile.open = false;
+                profile.querySelector("summary").focus();
+            }
+        });
+    })();
+</script>

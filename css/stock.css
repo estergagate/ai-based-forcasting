@@ -1,0 +1,212 @@
+/* Simple stock page */
+.stock-help {
+    margin: 0 0 18px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.stock-search-form {
+    margin: 18px 0 14px;
+}
+
+.stock-search-form label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.stock-search-form input {
+    width: min(340px, 100%);
+    min-height: 42px;
+    padding: 10px 12px;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.stock-search-form input:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+#stock-table th,
+#stock-updates-table th {
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 13px;
+}
+
+#stock-table th,
+#stock-table td,
+#stock-updates-table th,
+#stock-updates-table td {
+    padding: 14px 10px;
+}
+
+#stock-table tr[hidden],
+#stock-updates-table tr[hidden] {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .stock-search-form input {
+        width: 100%;
+    }
+}
+/* Keep Notes at the right side without making the table wider */
+.stock-note-cell {
+    white-space: nowrap;
+    text-align: left;
+}
+
+.stock-note-preview {
+    display: inline;
+}
+
+.stock-note-button {
+    display: inline;
+    margin-left: 4px;
+    padding: 0;
+
+    color: var(--green-dark);
+    background: transparent;
+    border: 0;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+/* Popup containing the complete note */
+.stock-note-dialog {
+    width: min(460px, calc(100vw - 32px));
+    padding: 22px;
+
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.stock-note-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.stock-note-dialog-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.stock-note-dialog h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.stock-note-dialog p {
+    max-height: 280px;
+    margin: 18px 0;
+    overflow-y: auto;
+
+    color: var(--ink-soft);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.stock-note-close {
+    width: 36px;
+    height: 36px;
+
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.stock-note-close:hover {
+    background: var(--green-light);
+}
+/* Let a row become taller when its note wraps to another line */
+#stock-updates-table th,
+#stock-updates-table td {
+    vertical-align: middle;
+}
+
+.stock-note-cell {
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+/* Give Notes the largest part of the row */
+.stock-date-column {
+    width: 13%;
+}
+
+.stock-product-column {
+    width: 17%;
+}
+
+.stock-update-column {
+    width: 18%;
+}
+
+.stock-amount-column {
+    width: 10%;
+}
+
+.stock-unit-column {
+    width: 10%;
+}
+
+.stock-notes-column {
+    width: 32%;
+}
+
+/* Long notes wrap downward instead of widening the table */
+#stock-updates-table th,
+#stock-updates-table td {
+    overflow-wrap: anywhere;
+    vertical-align: middle;
+}
+
+#stock-updates-table th:last-child,
+#stock-updates-table td:last-child {
+    padding-right: 14px;
+}
+.stock-date-column {
+    width: 16%;
+}
+
+.stock-product-column {
+    width: 23%;
+}
+
+.stock-update-column {
+    width: 18%;
+}
+
+.stock-amount-column {
+    width: 12%;
+}
+
+.stock-unit-column {
+    width: 11%;
+}
+
+.stock-notes-column {
+    width: 20%;
+}

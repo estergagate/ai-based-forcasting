@@ -1,0 +1,30 @@
+.tools-heading { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
+.tools-heading .section-title { margin:0; }
+.tools-heading a { text-decoration:none; }
+.tools-help { color:var(--ink-soft); font-size:13px; line-height:1.6; margin:12px 0; }
+.tools-stack { display:grid; gap:10px; max-width:600px; margin-top:16px; }
+.tools-stack input:not([type="checkbox"]), .tools-stack select, .import-review input:not([type="checkbox"]), .import-review select { min-height:44px; width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--card); color:var(--ink); }
+.tools-stack .btn { justify-self:start; }
+.tools-checkbox { display:flex; align-items:center; gap:10px; }
+.tools-inline { margin-top:12px; }
+.tools-dialog { padding:24px; width:min(440px, calc(100vw - 32px)); max-height:85dvh; overflow:auto; border:1px solid var(--border); border-radius:14px; background:var(--card); color:var(--ink); box-shadow:var(--shadow); }
+.tools-dialog::backdrop { background:rgba(0,0,0,.4); }
+.tools-dialog h2 { font-size:18px; margin-bottom:12px; }
+.tools-buttons { display:flex; justify-content:flex-end; gap:12px; margin-top:22px; }
+.unit-picker { position:relative; }
+.unit-picker summary { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; min-height:46px; border:1px solid var(--border); border-radius:9px; background:var(--card); color:var(--ink); cursor:pointer; list-style:none; font-size:14px; }
+.unit-picker summary::-webkit-details-marker { display:none; }
+.unit-options { position:absolute; top:calc(100% + 5px); left:0; z-index:60; width:max(100%, 210px); max-width:calc(100vw - 100px); max-height:260px; overflow:auto; padding:6px; border:1px solid var(--border); border-radius:10px; background:var(--card); box-shadow:var(--shadow); }
+.unit-option { display:flex; align-items:center; }
+.unit-option > button:first-child { flex:1; min-width:0; text-align:left; padding:10px; overflow-wrap:anywhere; }
+.unit-option button, .unit-add, .unit-x { border:0; background:transparent; color:var(--ink); font:inherit; cursor:pointer; }
+.unit-option button:hover, .unit-add:hover, .unit-x:hover { background:var(--green-light); border-radius:6px; }
+.unit-x { min-width:40px; min-height:40px; font-size:22px; }
+.unit-add { width:100%; min-height:44px; text-align:left; padding:10px; color:var(--green-dark); font-weight:600; }
+.unit-list { list-style:none; padding:0; margin:12px 0; max-height:220px; overflow:auto; }
+.unit-list li { display:flex; justify-content:space-between; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
+.unit-list li span { overflow-wrap:anywhere; }
+.unit-picker :focus-visible, .tools-dialog :focus-visible { outline:2px solid var(--orange); outline-offset:2px; }
+.import-preview td { min-width:130px; max-width:250px; overflow-wrap:anywhere; }
+.import-review { min-width:700px; margin:16px 0; }
+.import-review input[type="checkbox"] { width:20px; height:20px; }

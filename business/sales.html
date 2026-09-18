@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Sales | FoodCast AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sales.css') }}">
+
+    <script src="{{ url_for('theme_script') }}"></script>
+    <script src="{{ url_for('sidebar_script') }}"></script>
+</head>
+
+<body>
+    <div class="shell">
+        {% include "business/sidebar.html" %}
+
+        <div class="main">
+            {% include "business/header.html" %}
+
+            <main class="content sales-page">
+                <section class="products-hero sales-hero">
+                    <div>
+                        <p class="products-hero-label">Sales management</p>
+                        <h2>Keep your sales records updated</h2>
+                        <p>Record each product’s sales daily to see clear totals and improve future sales forecasts.</p>
+                    </div>
+                
+                    <div class="products-hero-actions">
+                        <a href="#record-sales-title" class="products-hero-button products-hero-button-muted">
+                            Record a sale
+                        </a>
+                
+                        <a href="{{ url_for('business_forecasting') }}" class="products-hero-button">
+                            View sales forecast →
+                        </a>
+                    </div>
+                </section>
+                <section class="card sales-entry-card" aria-labelledby="record-sales-title">
+                    <h2 id="record-sales-title" class="section-title">
+                        Record sales
+                    </h2>
+
+                    <p class="sales-help">
+                        Add the total sold for one product on one day.
+                    </p>
+
+                    {% if error %}
+                    <p class="business-error" role="alert">{{ error }}</p>
+                    {% endif %}
+
+                    {% if products %}
+                    <form method="post" action="{{ url_for('business_sales') }}" class="sales-entry">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="sales-field">
+                            <label for="sale_date">Date</label>
+                            <input type="date" id="sale_date" name="sale_date" value="{{ values['sale_date'] }}"
+                                max="{{ today }}" required>
+                        </div>
+
+                        <div class="sales-field">
+                            <label for="product_id">Product</label>
+                            <select id="product_id" name="product_id" required>
+                                <option value="">Choose a product</option>
+
+                                {% for product in products %}
+                                <option
+                                    value="{{ product['product_id'] }}"
+                                    data-price="{{ product['selling_price'] }}"
+                                    {% if values['product_id'] == product['product_id']|string %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    {{ product["product_name"] }}
+                                    — ₱{{ "{:,.2f}".format(product["selling_price"]) }}
+                                    / {{ product["selling_unit"] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="sales-field">
+                            <label for="quantity_sold">How many sold?</label>
+                            <input type="number" id="quantity_sold" name="quantity_sold"
+                                value="{{ values['quantity_sold'] }}" min="0" max="2147483647" step="1" required>
+                        </div>
+
+                        <div class="sales-field">
+                            <label for="sales_amount">Total sales (₱)</label>
+                                                        <input
+                                type="number"
+                                id="sales_amount"
+                                name="sales_amount"
+                                value="{{ values['sales_amount'] }}"
+                                step="0.01"
+                                placeholder="Calculated automatically"
+                                aria-describedby="sales-amount-help"
+                                readonly
+                            >
+                        </div>
+
+                        <div class="sales-entry-footer">
+                            <p id="sales-amount-help" class="sales-help">
+                                Total sales is calculated using the quantity
+                                and your product’s current price.
+                            </p>
+
+                            <button type="submit" class="btn btn-primary">
+                                Save sales
+                            </button>
+                        </div>
+                    </form>
+
+                    <details class="sales-guidance">
+                        <summary>Need help?</summary>
+                        <                        <p>
+                            Example: choose bread priced at ₱5 and enter
+                            20 under “How many sold?”
+                            The total becomes ₱100 automatically.
+                            Enter zero if none were sold.
+                        </p>
+                        <p>
+                            If you already saved this product’s sales for
+                            that date, use Edit in the list below.
+                        </p>
+                    </details>
+                    {% else %}
+                    <div class="sales-empty">
+                        <p>Add your products before recording sales.</p>
+                        <a href="{{ url_for('business_products') }}" class="btn btn-primary">
+                            Add a product
+                        </a>
+                    </div>
+                    {% endif %}
+                </section>
+
+                <section id="your-sales" class="card sales-results-card" aria-labelledby="your-sales-title">
+                    <div class="sales-list-heading">
+                        <h2 id="your-sales-title" class="section-title">
+                            Your sales
+                        </h2>
+
+                        {% if not filter_error and sales %}
+                        <a class="btn btn-outline" href="{{ url_for(
+                                'export_sales',
+                                start_date=filters['start_date'],
+                                end_date=filters['end_date'],
+                                search=filters['search']
+                            ) }}" title="Download matching sales as a CSV file">
+                            Download sales
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <details class="sales-date-options" {% if filters['start_date'] or filters['end_date'] or
+                        filter_error %} open {% endif %}>
+                        <summary>Choose dates</summary>
+
+                        <form
+    method="get"
+    action="{{ url_for('business_sales', _anchor='your-sales') }}"
+    class="sales-date-form"
+>
+                            <div class="sales-field">
+                                <label for="filter-start-date">From</label>
+                                <input type="date" id="filter-start-date" name="start_date"
+                                    value="{{ filters['start_date'] }}">
+                            </div>
+
+                            <div class="sales-field">
+                                <label for="filter-end-date">To</label>
+                                <input type="date" id="filter-end-date" name="end_date"
+                                    value="{{ filters['end_date'] }}">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Show sales
+                            </button>
+
+                            <a
+    href="{{ url_for('business_sales', _anchor='your-sales') }}"
+    class="sales-text-link"
+>
+                                Show all dates
+                            </a>
+                        </form>
+                    </details>
+
+                    {% if filter_error %}
+                    <p class="business-error" role="alert">
+                        {{ filter_error }}
+                    </p>
+                    {% else %}
+                    <div class="sales-total-strip">
+                        <div>
+                            <span class="sales-help">
+                                {{ total_label }}
+                            </span>
+                            <strong>
+                                ₱{{ "{:,.2f}".format(summary["total_sales"]) }}
+                            </strong>
+                        </div>
+
+                        <span class="sales-help">
+                            {{ summary["record_count"] }} saved
+                            {{ 'entry' if summary["record_count"] == 1 else 'entries' }}
+                        </span>
+                    </div>
+
+                    {% if sales %}
+                    <div class="table-scroll">
+                        <table id="sales-table" class="sales-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Sold</th>
+                                    <th scope="col">Total sales</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for sale in sales %}
+                                <tr>
+                                    <td>
+                                        {{ sale["sale_date"].strftime("%b %d, %Y") }}
+                                    </td>
+                                    <td>{{ sale["product_name"] }}</td>
+                                    <td>
+                                        {{ sale["quantity_sold"] }}
+                                        {{ sale["selling_unit"] }}
+                                    </td>
+                                    <td class="sales-money">
+                                        ₱{{ "{:,.2f}".format(sale["sales_amount"]) }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('edit_sale', sale_id=sale['sale_id']) }}"
+                                            class="sales-text-link"
+                                            aria-label="Edit {{ sale['product_name'] }} sales for {{ sale['sale_date'].strftime('%B %d, %Y') }}">
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <p id="sales-search-empty" hidden>No saved sales match your search.</p>
+                        </table>
+                    </div>
+
+                    <p class="sales-help sales-list-note">
+                        {% if summary["record_count"] > 50 %}
+                        Showing the latest 50 entries.
+                        The total and download include all entries
+                        for these dates.
+                        {% else %}
+                        Latest dates appear first.
+                        {% endif %}
+                    </p>
+                    {% else %}
+                    <div class="sales-empty">
+                        {% if filters['start_date'] or filters['end_date'] %}
+                        <p>
+                            No sales found
+                            {% if filters['search'] %}
+                                for “{{ filters['search'] }}”
+                            {% endif %}
+                            in these dates.
+                        </p>
+                        <a
+    href="{{ url_for('business_sales', _anchor='your-sales') }}"
+    class="sales-text-link"
+>
+                            Show all dates
+                        </a>
+                        {% else %}
+                        <p>No sales saved yet.</p>
+                        <p class="sales-help">
+                            Your entries will appear here after you save them.
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </section>
+            </main>
+        </div>
+    </div>
+
+<script>
+    (function () {
+        const product = document.getElementById("product_id");
+        const quantity = document.getElementById("quantity_sold");
+        const total = document.getElementById("sales_amount");
+
+        if (!product || !quantity || !total) return;
+
+        function calculateTotal() {
+            total.value = "";
+            quantity.setCustomValidity("");
+
+            const option = product.selectedOptions[0];
+            const priceText = option?.dataset.price;
+
+            if (!priceText || quantity.value.trim() === "") return;
+
+            const count = Number(quantity.value);
+            const priceInCentavos = Math.round(Number(priceText) * 100);
+            const maximumTotal = 999999999999;
+
+            if (
+                !Number.isInteger(count) ||
+                count < 0 ||
+                count > 2147483647 ||
+                !Number.isSafeInteger(priceInCentavos) ||
+                priceInCentavos < 0
+            ) {
+                return;
+            }
+
+            if (
+                priceInCentavos > 0 &&
+                count > Math.floor(maximumTotal / priceInCentavos)
+            ) {
+                quantity.setCustomValidity(
+                    "The total is too large. Please check the quantity."
+                );
+                return;
+            }
+
+            total.value = ((count * priceInCentavos) / 100).toFixed(2);
+        }
+
+        product.addEventListener("change", calculateTotal);
+        quantity.addEventListener("input", calculateTotal);
+        window.addEventListener("pageshow", calculateTotal);
+
+        calculateTotal();
+    })();
+</script>
+
+<script>
+    (function () {
+        const input = document.getElementById("sales_live_search");
+        const clearButton = document.getElementById("clear-sales-live-search");
+        const table = document.getElementById("sales-table");
+
+        if (!input || !clearButton || !table) return;
+
+        const rows = table.querySelectorAll("tbody tr");
+
+        function filterSales() {
+            const text = input.value.trim().toLowerCase();
+            let matches = 0;
+
+            rows.forEach(function (row) {
+                const matchesSearch = row.textContent.toLowerCase().includes(text);
+                row.hidden = !matchesSearch;
+
+                if (matchesSearch) matches += 1;
+            });
+
+            clearButton.hidden = text.length === 0;
+            document.body.classList.toggle("sales-search-active", text.length > 0);
+
+            const emptyMessage = document.getElementById("sales-search-empty");
+            if (emptyMessage) {
+                emptyMessage.hidden = text.length === 0 || matches > 0;
+            }
+        }
+
+        input.addEventListener("input", filterSales);
+
+        clearButton.addEventListener("click", function () {
+            input.value = "";
+            input.focus();
+            filterSales();
+        });
+    })();
+</script>
+</body>
+
+</html>
